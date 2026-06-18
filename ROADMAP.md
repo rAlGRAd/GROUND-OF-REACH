@@ -17,8 +17,9 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
       130.136.9.1 /21, conversione 37, VLSM 50/25/10) in `COMP`; nuova mappa `EX_REF` collega le carte
       SUBNET (`Borrow Bits`→9.1, `FLSM`→9.3, `VLSM`→9.5) agli esercizi, con link «Esercizio svolto §X»
       nell'overlay e stile `code`/`b` nel compendio. Verificato nel preview (0 errori, àncore `#r9.x` ok).
-- [ ] **Keyword `CONTIGUOUS`** — prerequisito di aggregazione; in `KW`/`KW_INFO`, applicala a
-      `Supernet` e `Summarization`, con `KW_REF` → §5.2.
+- [x] **Keyword `CONTIGUOUS`** — aggiunta a `KW`/`KW_INFO` (blocchi adiacenti e allineati a potenza di 2),
+      applicata a `Supernet` e `Summarization`, `KW_REF` → §5.2. Verificato nel preview (glossario, overlay
+      "Usata da", link §5.2, 0 errori).
 - [ ] **Espansione ADDRESS** — carte `Loopback` (127/8), `APIPA` (169.254/16), `Public IP`, ciascuna
       con `INFO` e `TERM_REF` verso §2.
 - [ ] **Espansione SECURITY** — carte minaccia: `IP Spoofing`, `Subnet Scan`, con campo opzionale
@@ -33,3 +34,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 <!-- una riga per ogni voce completata -->
 - v0.1 — scaffold + seed iniziale (data model, 22 carte, 16 keyword, compendio 8 capitoli).
 - Capitolo 9 «Esercizi svolti» (casi Bononi) + `EX_REF` e link esercizio nelle carte SUBNET.
+- Keyword `CONTIGUOUS` su `Supernet`/`Summarization` (prerequisito di aggregazione, §5.2).

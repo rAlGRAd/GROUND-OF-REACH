@@ -54,6 +54,7 @@ const KW = [
   ["BORROW",    "b", "Prende in prestito host-bit per creare sottoreti (allunga il prefisso)."],
   ["SPLIT",     "b", "Suddivide un blocco in 2^s sottoreti."],
   ["AGGREGATE", "a", "Accorpa blocchi contigui (supernetting): accorcia il prefisso."],
+  ["CONTIGUOUS", "a", "Blocchi adiacenti e allineati a una potenza di 2: prerequisito dell'aggregazione."],
   ["PRIVATE",   "a", "Spazi RFC1918 (10/8, 172.16/12, 192.168/16): non instradabili."],
   ["ROUTE",     "r", "Inoltro verso una rete remota tramite la tabella di routing."],
   ["GATEWAY",   "r", "Uscita dalla sottorete locale verso reti diverse."],
@@ -74,6 +75,7 @@ const KW_INFO = {
   BORROW:    { r: "Per creare sottoreti si convertono host-bit in bit di rete, allungando il prefisso.", g: "Spendi host-bit per guadagnare sottoreti: il trade-off centrale del gioco." },
   SPLIT:     { r: "s bit prestati dividono un blocco in 2^s sottoreti uguali.", g: "Un'azione SPLIT trasforma 1 carta-blocco in 2^s carte-blocco figlie." },
   AGGREGATE: { r: "Blocchi contigui e allineati si fondono in un prefisso più corto (supernet).", g: "Inverso di BORROW: ricuci più blocchi in uno, come Root of Trust aggrega fiducia." },
+  CONTIGUOUS:{ r: "Per aggregare, i blocchi devono essere adiacenti e allineati a un confine potenza di 2 (es. .0/24 + .1/24 → /23, ma non .1/24 + .2/24).", g: "Requisito di AGGREGATE: solo carte-blocco confinanti e allineate si possono fondere." },
   PRIVATE:   { r: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 non sono instradabili in Internet (RFC1918).", g: "Carte 'interne': per uscire devono passare da una carta TRANSLATE." },
   ROUTE:     { r: "Un router inoltra il pacchetto consultando la tabella di routing.", g: "Sposta una carta verso una rete non locale." },
   GATEWAY:   { r: "Il default gateway riceve il traffico destinato fuori dalla sottorete locale.", g: "Porta d'uscita obbligata quando la destinazione non è nel tuo blocco." },
@@ -111,8 +113,8 @@ const CARDS = [
   { n:"VLSM",           fac:"net",  cost:"S",  ty:"Tecnica · Subnetting", cls:"SUBNET",      rel:"Maschere variabili: assegna prima i blocchi grandi, poi i piccoli → spreco minimo.", kw:["SPLIT","BORROW","HOSTRANGE"] },
 
   /* --- AGGREGATION --- */
-  { n:"Supernet",       fac:"net",  cost:"S",  ty:"Tecnica · Aggregazione", cls:"AGGREGATION", rel:"Accorpa 2^s blocchi contigui → accorcia il [Prefix]. Inverso di [Borrow Bits].", kw:["AGGREGATE","PREFIX"] },
-  { n:"Summarization",  fac:"edge", cost:"S",  ty:"Tecnica · Aggregazione", cls:"AGGREGATION", rel:"Un solo [Prefix] riassume molte rotte → tabella di [Routing] più piccola.", kw:["AGGREGATE","ROUTE","MATCH"] },
+  { n:"Supernet",       fac:"net",  cost:"S",  ty:"Tecnica · Aggregazione", cls:"AGGREGATION", rel:"Accorpa 2^s blocchi contigui → accorcia il [Prefix]. Inverso di [Borrow Bits].", kw:["AGGREGATE","CONTIGUOUS","PREFIX"] },
+  { n:"Summarization",  fac:"edge", cost:"S",  ty:"Tecnica · Aggregazione", cls:"AGGREGATION", rel:"Un solo [Prefix] riassume molte rotte → tabella di [Routing] più piccola.", kw:["AGGREGATE","CONTIGUOUS","ROUTE","MATCH"] },
 
   /* --- FORWARDING --- */
   { n:"Default Gateway",      fac:"edge", cost:"S", ty:"Oggetto",          cls:"FORWARDING",  rel:"Destinazione fuori dalla [Host Range] locale → consegna al [Default Gateway].", kw:["GATEWAY","ROUTE"] },
@@ -236,7 +238,7 @@ const TERM_REF = {
 /* Rimandi keyword → regola del compendio */
 const KW_REF = {
   BIT:"1.1", POWER2:"1.4", AND:"3.2", PREFIX:"3.1", NETID:"3.3", BROADCAST:"3.4",
-  HOSTRANGE:"3.5", BORROW:"4.1", SPLIT:"4.2", AGGREGATE:"5.1", PRIVATE:"2.3",
+  HOSTRANGE:"3.5", BORROW:"4.1", SPLIT:"4.2", AGGREGATE:"5.1", CONTIGUOUS:"5.2", PRIVATE:"2.3",
   ROUTE:"6.2", GATEWAY:"6.1", MATCH:"6.2", TRANSLATE:"7.1", WILDCARD:"8.1"
 };
 
