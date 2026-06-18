@@ -73,6 +73,30 @@
   .win .lk{margin-top:10px;font-size:.82rem}
   footer{max-width:1180px;margin:0 auto;padding:0 20px 50px;color:var(--mut);font-size:.8rem}
   mark{background:#39d0c855;color:inherit;border-radius:3px}
+
+  /* ---- stampa: galleria pulita, ink-friendly ---- */
+  @media print{
+    body{background:#fff;color:#111}
+    .search,nav,#ov,#ac{display:none !important}
+    header{padding:0 0 8px;max-width:none}
+    .meta{color:#333}
+    main{max-width:none;padding:0}
+    a{color:#111;text-decoration:none}
+    section.cls{margin-top:14px;break-inside:auto}
+    .cls h2{color:#111;border-color:#999;break-after:avoid;font-size:1rem}
+    .cls h2 small{color:#555}
+    .grid{grid-template-columns:repeat(3,1fr);gap:8px}
+    #glossary .grid{grid-template-columns:repeat(3,1fr)}
+    .card,.kwcard{break-inside:avoid;page-break-inside:avoid;box-shadow:none;transform:none !important;
+      background:#fff;border:1px solid #999}
+    .card .rel,.card .ty{color:#222}
+    .card .req{color:#333;border-color:#999}
+    .card .cost{background:#fff;color:#111;border:1px solid #111}
+    .card::before,.tag.b,.tag.a,.tag.r{ -webkit-print-color-adjust:exact;print-color-adjust:exact }
+    .tag{border-color:#999;color:#333}
+    .kwcard .kd{color:#333}
+    footer{color:#444;font-size:.72rem}
+  }
 </style>
 </head>
 <body>

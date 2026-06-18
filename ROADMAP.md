@@ -29,7 +29,9 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - [x] **Costi in bit** — semantica `cost`: N=bit fissati (su 32), `+s`=host-bit prestati, `h`=32−prefisso,
       `S`=⊕ effetto. Assegnati `Loopback` 8, `APIPA` 16, `Borrow Bits` +s, `Host Range` h; badge con tooltip
       e legenda nel footer. Verificato nel preview (0 errori).
-- [ ] **Print CSS** — `@media print` in `index.html`: nasconde nav/ricerca, stampa la griglia carte.
+- [x] **Print CSS** — `@media print` in `index.html`: nasconde ricerca/nav/overlay, griglia a 3 colonne su
+      fondo bianco, niente ombre/gradienti, badge e tag leggibili, carte non spezzate tra pagine
+      (`break-inside:avoid`). Verificato (regola print parsata, 0 errori).
 - [ ] **build-standalone.js** — implementa l'inlining di `data.js` + pagine in un unico HTML.
 - [ ] **Revisione veridicità** — rileggi 5 voci `INFO`/regole e correggi imprecisioni; annota quali.
 
@@ -41,3 +43,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Espansione ADDRESS: `Loopback`, `APIPA` (+regola §2.5 link-local), `Public IP`.
 - Espansione SECURITY: `IP Spoofing`, `Subnet Scan` + campo `req` (prerequisito reale).
 - Costi in bit: semantica N/+s/h/⊕, badge con tooltip e legenda.
+- Print CSS: galleria stampabile (griglia 3 col, ink-friendly, no page-break nelle carte).
