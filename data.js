@@ -129,7 +129,9 @@ const CARDS = [
 
   /* --- SECURITY --- */
   { n:"Wildcard Mask",  fac:"edge", cost:"S",  ty:"Oggetto · Operatore",  cls:"SECURITY",    rel:"Inverso della [Netmask]: 0=combacia, 1=indifferente. Alimenta la [ACL].", kw:["WILDCARD","MATCH"] },
-  { n:"ACL",            fac:"edge", cost:"S",  ty:"Policy",               cls:"SECURITY",    rel:"Confronta il pacchetto con [Wildcard Mask] → permit/deny. Vince la prima riga che combacia.", kw:["WILDCARD","MATCH"] }
+  { n:"ACL",            fac:"edge", cost:"S",  ty:"Policy",               cls:"SECURITY",    rel:"Confronta il pacchetto con [Wildcard Mask] → permit/deny. Vince la prima riga che combacia.", kw:["WILDCARD","MATCH"] },
+  { n:"IP Spoofing",    fac:"edge", cost:"S",  ty:"Minaccia · Spoofing",  cls:"SECURITY",    rel:"Falsifica l'IP sorgente → aggira i filtri della [ACL]. Inefficace con ingress filtering.", kw:["MATCH"], req:"Assenza di ingress filtering (BCP38/uRPF) sul percorso." },
+  { n:"Subnet Scan",    fac:"edge", cost:"S",  ty:"Minaccia · Recon",     cls:"SECURITY",    rel:"Enumera la [Host Range] del bersaglio (ping/ARP sweep) per trovare host attivi.", kw:["HOSTRANGE","NETID","PREFIX"], req:"Conoscere [Network ID] e [Prefix] del bersaglio." }
 ];
 
 /* ---------------------------------------------------------------------
@@ -168,7 +170,9 @@ const INFO = {
   "PAT":            { r:"Port Address Translation (NAT overload): molti host condividono un IP pubblico via porta sorgente.", g:"Multiplexa molte carte interne su una sola uscita pubblica.", c:"ip nat inside source list 1 interface g0/0 overload" },
 
   "Wildcard Mask":  { r:"Maschera inversa: 0 impone il match del bit, 1 lo rende indifferente; usata nelle ACL.", g:"Definisce quali carte una [ACL] intercetta; è il complemento bit-a-bit della [Netmask].", c:"netmask 255.255.255.0 → wildcard 0.0.0.255" },
-  "ACL":            { r:"Access Control List: regole permit/deny confrontate in ordine; vince la prima che combacia.", g:"Filtro a regole sequenziali con deny implicito finale.", c:"access-list 10 permit 192.168.1.0 0.0.0.255" }
+  "ACL":            { r:"Access Control List: regole permit/deny confrontate in ordine; vince la prima che combacia.", g:"Filtro a regole sequenziali con deny implicito finale.", c:"access-list 10 permit 192.168.1.0 0.0.0.255" },
+  "IP Spoofing":    { r:"L'attaccante falsifica l'indirizzo IP sorgente dei pacchetti per impersonare un altro host o nascondersi. Si contrasta con ingress filtering (BCP38) e uRPF, che scartano i pacchetti con sorgente implausibile.", g:"Carta minaccia: aggira le ACL basate sulla sorgente; bloccata se l'Edge applica anti-spoofing.", c:"uRPF: ip verify unicast source reachable-via rx" },
+  "Subnet Scan":    { r:"Ricognizione che enumera gli indirizzi della host range di una sottorete (ping sweep ICMP o ARP scan) per individuare gli host attivi prima di un attacco.", g:"Carta recon: rivela le carte Host presenti in un blocco; per enumerarlo serve conoscerne rete e prefisso.", c:"nmap -sn 192.168.1.0/24" }
 };
 
 /* ---------------------------------------------------------------------
@@ -219,7 +223,9 @@ const COMP = [
   { id:"8", title:"Sicurezza: wildcard e ACL", cls:"SECURITY", intro:"Filtrare il traffico.", rules:[
     ["8.1","La wildcard mask è l'inverso della netmask: 0 = il bit deve combaciare, 1 = indifferente."],
     ["8.2","Le ACL confrontano i pacchetti con coppie indirizzo/wildcard e applicano permit o deny."],
-    ["8.3","L'ordine conta: vince la prima riga che combacia; c'è un deny implicito finale."]
+    ["8.3","L'ordine conta: vince la prima riga che combacia; c'è un deny implicito finale."],
+    ["8.4","<b>IP spoofing</b>: falsificazione dell'IP sorgente per impersonare o nascondersi; si contrasta con <b>ingress filtering</b> (BCP38) e <b>uRPF</b>. <i>Prerequisito</i>: assenza di tali filtri sul percorso."],
+    ["8.5","<b>Subnet scan</b> (ping/ARP sweep): enumerazione della host range per scoprire host attivi. <i>Prerequisito</i>: conoscere Network ID e prefisso del bersaglio."]
   ]},
   { id:"9", title:"Esercizi svolti (materiale Bononi)", cls:"SUBNET", intro:"Identificazione di sottorete e Network ID sui casi del ripasso reti IPv4.", rules:[
     ["9.1","<b>130.136.128.128</b> · maschera <b>255.255.128.0</b> (/17). Rete classe B (default /16) estesa di <b>1 bit</b> → 2 sottoreti. 3° ottetto <code>128 = 10000000</code>: il bit di sottorete vale <b>1</b> → <b>sottorete 1</b>. Network ID <code>128 AND 128 = 128</code> → <b>130.136.128.0/17</b> (host .128.1–.255.254, broadcast .255.255)."],
@@ -240,7 +246,7 @@ const TERM_REF = {
   "Supernet":"5.1", "Summarization":"5.3",
   "Default Gateway":"6.1", "Longest Prefix Match":"6.2",
   "NAT":"7.1", "PAT":"7.2",
-  "Wildcard Mask":"8.1", "ACL":"8.2"
+  "Wildcard Mask":"8.1", "ACL":"8.2", "IP Spoofing":"8.4", "Subnet Scan":"8.5"
 };
 
 /* Rimandi keyword → regola del compendio */

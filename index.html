@@ -47,6 +47,8 @@
   .card .cost{font-family:var(--mono);font-size:.8rem;color:var(--bg);background:var(--fac);border-radius:7px;padding:2px 7px;white-space:nowrap}
   .card .ty{color:var(--mut);font-size:.76rem;margin-top:2px}
   .card .rel{font-size:.84rem;margin-top:10px;color:#cdd8f2;min-height:34px}
+  .card .req{font-size:.78rem;margin-top:8px;color:#ffb0bd;border-left:2px solid var(--edge);padding-left:7px}
+  .card .req a{color:#ffd0d8}
   .card .kw{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .tag{font-family:var(--mono);font-size:.7rem;padding:2px 6px;border-radius:6px;border:1px solid var(--line);color:var(--mut)}
   .tag.b{color:var(--b)} .tag.a{color:var(--a)} .tag.r{color:var(--r)}
@@ -131,7 +133,7 @@
     const kw=c.kw.map(k=>`<span class="tag ${kwType(k)}">${k}</span>`).join("");
     d.innerHTML=`<div class="top"><div><div class="nm">${c.n}</div><div class="ty">${c.ty}</div></div>
       <div class="cost">${c.cost==="S"?"⊕":c.cost+" bit"}</div></div>
-      <div class="rel">${linkRel(c.rel)}</div><div class="kw">${kw}</div>`;
+      <div class="rel">${linkRel(c.rel)}</div>${c.req?`<div class="req">⚑ Richiede: ${linkRel(c.req)}</div>`:""}<div class="kw">${kw}</div>`;
     d.addEventListener("click",e=>{ if(e.target.closest("[data-card]"))return; openCard(c.n); });
     return d;
   }
@@ -165,6 +167,7 @@
     const i=INFO[n]||{}; const ref=TERM_REF[n];
     const kw=c.kw.map(k=>`<a data-kw="${k}" href="#"><span class="tag ${kwType(k)}">${k}</span></a>`).join(" ");
     let h=`<div class="lbl">Carta · ${c.ty} · ${FAC[c.fac].label}</div><p>${linkRel(c.rel)}</p>`;
+    if(c.req){h+=`<div class="lbl">⚑ Requisito (prerequisito reale)</div><p>${linkRel(c.req)}</p>`;}
     if(i.r){h+=`<div class="lbl">Cos'è davvero (reti IPv4)</div><p>${linkRel(i.r)}</p>`;}
     if(i.g){h+=`<div class="lbl">Nel gioco</div><p>${linkRel(i.g)}</p>`;}
     if(i.c){h+=`<div class="lbl">Calcolo / comando</div><div class="cmd">${i.c}</div>`;}

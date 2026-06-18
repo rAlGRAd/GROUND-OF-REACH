@@ -32,8 +32,10 @@ rispecchia il comportamento reale, è un bug.
 - `CLS` / `CLS_ORDER` — classi in ordine reale: `BINARY, ADDRESS, MASK, SUBNET, AGGREGATION, FORWARDING, TRANSLATION, SECURITY`.
 - `KW` — `[nome, tipo, descrizione]`; tipo: `b` (bit), `a` (indirizzo), `r` (inoltro).
 - `KW_INFO[name]` — `{ r: reale, g: gioco }`.
-- `CARDS` — `{ n, fac, cost, ty, cls, rel, kw }`. `cost` = numero di bit oppure `"S"` (effetto/regola).
-  `rel` usa `[Carta]` per i rimandi e ` → ` come connettore.
+- `CARDS` — `{ n, fac, cost, ty, cls, rel, kw, req? }`. `cost` = numero di bit oppure `"S"` (effetto/regola).
+  `rel` usa `[Carta]` per i rimandi e ` → ` come connettore. `req` (opzionale, carte minaccia) = prerequisito
+  reale della tecnica, reso in galleria e overlay; può contenere rimandi `[Carta]`.
+- `EX_REF[name]` — rimando carta → esercizio svolto del compendio (cap. 9).
 - `INFO[name]` — `{ r: cos'è davvero, g: nel gioco, c?: calcolo/comando reale }`.
 - `COMP` — capitoli del compendio `{ id, title, cls, intro, rules:[[id,txt],…] }`.
 - `TERM_REF[name]` / `KW_REF[name]` — rimando carta/keyword → regola del compendio (es. `"3.2"`).

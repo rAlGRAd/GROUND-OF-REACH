@@ -23,8 +23,9 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - [x] **Espansione ADDRESS** — aggiunte `Loopback` (127/8 →2.2), `APIPA` (169.254/16 →2.5, nuova regola
       link-local nel compendio) e `Public IP` (→2.3), ciascuna con `INFO` (r/g/c) e `TERM_REF`. 25 carte
       totali. Verificato nel preview (ADDRESS 7 carte, overlay APIPA link §2.5, 0 errori).
-- [ ] **Espansione SECURITY** — carte minaccia: `IP Spoofing`, `Subnet Scan`, con campo opzionale
-      `req` (prerequisito reale della tecnica) reso in carta e legenda.
+- [x] **Espansione SECURITY** — carte minaccia `IP Spoofing` (→8.4) e `Subnet Scan` (→8.5) con nuovo
+      campo opzionale `req` (prerequisito reale), reso in galleria e nell'overlay; regole 8.4/8.5 nel
+      compendio. 27 carte. Verificato nel preview (req visibile, link §8.x, 0 errori).
 - [ ] **Costi in bit** — assegna `cost` numerico (host-bit / prefisso) alle carte dove la quantità è
       didatticamente significativa (es. `Borrow Bits`, `Host Range`); aggiorna il rendering.
 - [ ] **Print CSS** — `@media print` in `index.html`: nasconde nav/ricerca, stampa la griglia carte.
@@ -37,3 +38,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Capitolo 9 «Esercizi svolti» (casi Bononi) + `EX_REF` e link esercizio nelle carte SUBNET.
 - Keyword `CONTIGUOUS` su `Supernet`/`Summarization` (prerequisito di aggregazione, §5.2).
 - Espansione ADDRESS: `Loopback`, `APIPA` (+regola §2.5 link-local), `Public IP`.
+- Espansione SECURITY: `IP Spoofing`, `Subnet Scan` + campo `req` (prerequisito reale).
