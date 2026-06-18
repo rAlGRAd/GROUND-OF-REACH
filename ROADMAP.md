@@ -35,7 +35,12 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - [x] **build-standalone.js** — `node build-standalone.js` genera `ground-of-reach-standalone.html`
       (43 KB): inlina `data.js`, embedda il compendio renderizzato da `COMP` e riscrive i rimandi
       `compendio.html#r…` in àncore interne. Verificato nel preview (27 carte, 9 cap./37 regole, 0 errori).
-- [ ] **Revisione veridicità** — rileggi 5 voci `INFO`/regole e correggi imprecisioni; annota quali.
+- [x] **Revisione veridicità** — riletti INFO/regole; corretti: (1) regola 6.1 — inoltro host ora confronta
+      i DUE Network ID (proprio e destinazione), non solo la destinazione; (2) `Public IP` esempio
+      `203.0.113.10` (range di sola documentazione RFC5737) → `8.8.8.8` realmente instradabile; (3) `linkRel`
+      — i rimandi `[keyword]` (es. `[Prefix]`) ora aprono il glossario e i termini inesistenti (`[Routing]`)
+      sono testo semplice → eliminati i link morti. Confermati corretti calcoli subnetting/conversioni e
+      comandi reali (uRPF, NAT/PAT, nmap, wildcard/ACL). Standalone rigenerato. 0 errori console.
 
 ## Log
 <!-- una riga per ogni voce completata -->
@@ -47,3 +52,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Costi in bit: semantica N/+s/h/⊕, badge con tooltip e legenda.
 - Print CSS: galleria stampabile (griglia 3 col, ink-friendly, no page-break nelle carte).
 - build-standalone.js: single-file con galleria + glossario + compendio inlinati.
+- Revisione veridicità: fix regola 6.1, esempio Public IP, link morti [Prefix]/[Routing].

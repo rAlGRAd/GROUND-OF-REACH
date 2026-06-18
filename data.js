@@ -149,7 +149,7 @@ const INFO = {
   "CIDR":           { r:"Classless Inter-Domain Routing: il prefisso /n è esplicito e di lunghezza qualsiasi.", g:"Sblocca prefissi arbitrari, abilitando subnetting e aggregazione fini.", c:"192.168.1.0/26" },
   "Loopback":       { r:"127.0.0.0/8 è riservato al loopback: identifica l'host locale (tipicamente 127.0.0.1); i pacchetti non lasciano mai la macchina.", g:"Carta 'interna alla macchina': non entra mai nel routing.", c:"ping 127.0.0.1 → testa lo stack TCP/IP locale" },
   "APIPA":          { r:"169.254.0.0/16 (link-local, RFC3927): un host se l'assegna da solo quando non riceve un indirizzo dal DHCP; comunica solo nello stesso segmento e non è instradabile.", g:"Indirizzo di ripiego: gioca solo nel blocco locale, mai oltre il gateway.", c:"Windows: «Indirizzo IP autoconfigurato 169.254.x.y»" },
-  "Public IP":      { r:"Indirizzo globalmente univoco e instradabile su Internet, assegnato da IANA/RIR; è l'opposto degli spazi privati RFC1918.", g:"Carta che attraversa l'Edge senza traduzione; è il bersaglio della NAT.", c:"es. 203.0.113.10 (TEST-NET-3)" },
+  "Public IP":      { r:"Indirizzo globalmente univoco e instradabile su Internet, assegnato da IANA/RIR; è l'opposto degli spazi privati RFC1918.", g:"Carta che attraversa l'Edge senza traduzione; è il bersaglio della NAT.", c:"es. 8.8.8.8 (globalmente instradabile)" },
 
   "Netmask":        { r:"Sequenza di 32 bit con 1 sui bit di rete e 0 su quelli di host; l'AND con l'indirizzo dà la rete.", g:"L'operatore centrale: applicato a [IPv4 Address] produce [Network ID].", c:"192.168.1.10 AND 255.255.255.0 → 192.168.1.0" },
   "Network ID":     { r:"Indirizzo con host-bit tutti a 0: nomina il blocco e non è assegnabile a un host.", g:"Ancora del blocco; le carte Host le si collocano accanto, mai sopra.", c:"/24 → 192.168.1.0" },
@@ -211,7 +211,7 @@ const COMP = [
     ["5.3","La route summarization riduce la dimensione della tabella di routing con un prefisso riassuntivo."]
   ]},
   { id:"6", title:"Inoltro e instradamento", cls:"FORWARDING", intro:"Locale o remoto?", rules:[
-    ["6.1","L'host confronta (AND) la destinazione con la propria maschera: stessa rete → consegna diretta; rete diversa → al default gateway."],
+    ["6.1","L'host applica (AND) la propria maschera sia al proprio indirizzo sia alla destinazione e confronta i due Network ID: se coincidono → consegna diretta sulla LAN; altrimenti → invio al default gateway."],
     ["6.2","Un router sceglie la rotta con il prefisso che combacia più lungo (longest prefix match)."],
     ["6.3","La rotta di default 0.0.0.0/0 combacia con tutto (prefisso più corto): è l'ultima risorsa."]
   ]},

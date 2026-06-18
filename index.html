@@ -161,7 +161,12 @@
     d.addEventListener("click",e=>{ if(e.target.closest("[data-card]"))return; openCard(c.n); });
     return d;
   }
-  function linkRel(t){ return t.replace(/\[([^\]]+)\]/g,(m,n)=>`<a data-card="${n}" href="#">${n}</a>`); }
+  function linkRel(t){ return t.replace(/\[([^\]]+)\]/g,(m,n)=>{
+    if(CARDS.some(c=>c.n===n)) return `<a data-card="${n}" href="#">${n}</a>`;
+    const k=KW.find(x=>x[0].toLowerCase()===n.toLowerCase());
+    if(k) return `<a data-kw="${k[0]}" href="#">${n}</a>`;
+    return n; // né carta né keyword → testo semplice (niente link morti)
+  }); }
   function costTitle(c){
     if(c==="S")return "Effetto/regola — nessun costo fisso in bit";
     if(c==="+s")return "Subnetting: prende in prestito s host-bit (allunga il prefisso)";
