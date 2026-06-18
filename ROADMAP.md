@@ -13,8 +13,10 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 6. **Spunta la voce** (`- [x]`) con nota breve. Poi fermati.
 
 ## Lavori (in ordine di priorità)
-- [ ] **Carte esempio svolto** — aggiungi al compendio un capitolo 9 «Esercizi svolti» con i casi del
-      materiale Bononi (es. 130.136.128.128 /17, 130.136.9.1 /21) e collega carte SUBNET ai casi.
+- [x] **Carte esempio svolto** — capitolo 9 «Esercizi svolti» con i casi Bononi (130.136.128.128 /17 e /18,
+      130.136.9.1 /21, conversione 37, VLSM 50/25/10) in `COMP`; nuova mappa `EX_REF` collega le carte
+      SUBNET (`Borrow Bits`→9.1, `FLSM`→9.3, `VLSM`→9.5) agli esercizi, con link «Esercizio svolto §X»
+      nell'overlay e stile `code`/`b` nel compendio. Verificato nel preview (0 errori, àncore `#r9.x` ok).
 - [ ] **Keyword `CONTIGUOUS`** — prerequisito di aggregazione; in `KW`/`KW_INFO`, applicala a
       `Supernet` e `Summarization`, con `KW_REF` → §5.2.
 - [ ] **Espansione ADDRESS** — carte `Loopback` (127/8), `APIPA` (169.254/16), `Public IP`, ciascuna
@@ -30,3 +32,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 ## Log
 <!-- una riga per ogni voce completata -->
 - v0.1 — scaffold + seed iniziale (data model, 22 carte, 16 keyword, compendio 8 capitoli).
+- Capitolo 9 «Esercizi svolti» (casi Bononi) + `EX_REF` e link esercizio nelle carte SUBNET.

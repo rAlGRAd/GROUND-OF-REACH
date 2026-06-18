@@ -211,6 +211,13 @@ const COMP = [
     ["8.1","La wildcard mask è l'inverso della netmask: 0 = il bit deve combaciare, 1 = indifferente."],
     ["8.2","Le ACL confrontano i pacchetti con coppie indirizzo/wildcard e applicano permit o deny."],
     ["8.3","L'ordine conta: vince la prima riga che combacia; c'è un deny implicito finale."]
+  ]},
+  { id:"9", title:"Esercizi svolti (materiale Bononi)", cls:"SUBNET", intro:"Identificazione di sottorete e Network ID sui casi del ripasso reti IPv4.", rules:[
+    ["9.1","<b>130.136.128.128</b> · maschera <b>255.255.128.0</b> (/17). Rete classe B (default /16) estesa di <b>1 bit</b> → 2 sottoreti. 3° ottetto <code>128 = 10000000</code>: il bit di sottorete vale <b>1</b> → <b>sottorete 1</b>. Network ID <code>128 AND 128 = 128</code> → <b>130.136.128.0/17</b> (host .128.1–.255.254, broadcast .255.255)."],
+    ["9.2","Stesso IP con maschera <b>255.255.192.0</b> (/18) → <b>2 bit</b> di sottorete (4 sottoreti). 3° ottetto <code>10000000</code>: i primi 2 bit <code>10</code> → <b>sottorete 2</b> (00·01·10·11). Network ID <code>128 AND 192 = 128</code> → <b>130.136.128.0/18</b>."],
+    ["9.3","<b>130.136.9.1</b> · maschera <b>255.255.248.0</b> (/21). <code>248 = 128+64+32+16+8</code> → <b>5 bit</b> di sottorete (32 sottoreti uguali, FLSM). 3° ottetto <code>9 = 00001001</code>: i primi 5 bit <code>00001</code> → <b>sottorete 1</b>. Network ID <code>9 AND 248 = 8</code> → <b>130.136.8.0/21</b> (host .8.1–.15.254, broadcast .15.255)."],
+    ["9.4","Conversione decimale→binario: <b>37</b> = <code>32+4+1</code> → <code>00100101</code> (metodo dei valori di posizione, §1.3)."],
+    ["9.5","VLSM da <b>192.168.1.0/24</b> per fabbisogni 50/25/10 host (in ordine decrescente): 50→<b>/26</b> (62 host) .0–.63; 25→<b>/27</b> (30 host) .64–.95; 10→<b>/28</b> (14 host) .96–.111. Maschere variabili, spreco minimo."]
   ]}
 ];
 
@@ -233,8 +240,13 @@ const KW_REF = {
   ROUTE:"6.2", GATEWAY:"6.1", MATCH:"6.2", TRANSLATE:"7.1", WILDCARD:"8.1"
 };
 
+/* Rimandi carta → esercizio svolto del compendio (cap. 9) */
+const EX_REF = {
+  "Borrow Bits":"9.1", "FLSM":"9.3", "VLSM":"9.5"
+};
+
 /* Esposizione globale (niente bundler: si apre da filesystem) */
 if (typeof window !== "undefined") {
-  Object.assign(window, { META, FAC, CLS, CLS_ORDER, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF });
+  Object.assign(window, { META, FAC, CLS, CLS_ORDER, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF });
 }
-if (typeof module !== "undefined") { module.exports = { META, FAC, CLS, CLS_ORDER, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF }; }
+if (typeof module !== "undefined") { module.exports = { META, FAC, CLS, CLS_ORDER, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF }; }

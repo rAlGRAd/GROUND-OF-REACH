@@ -170,6 +170,8 @@
     if(i.c){h+=`<div class="lbl">Calcolo / comando</div><div class="cmd">${i.c}</div>`;}
     h+=`<div class="lbl" style="margin-top:14px">Keyword</div><p>${kw}</p>`;
     if(ref)h+=`<div class="lk">▸ <a href="compendio.html#r${ref}">Compendio §${ref}</a></div>`;
+    const ex=(typeof EX_REF!=="undefined")&&EX_REF[n];
+    if(ex)h+=`<div class="lk">▸ <a href="compendio.html#r${ex}">Esercizio svolto §${ex}</a></div>`;
     win(n,h);
   }
   function openKw(n){
