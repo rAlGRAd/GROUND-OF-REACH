@@ -32,7 +32,9 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - [x] **Print CSS** — `@media print` in `index.html`: nasconde ricerca/nav/overlay, griglia a 3 colonne su
       fondo bianco, niente ombre/gradienti, badge e tag leggibili, carte non spezzate tra pagine
       (`break-inside:avoid`). Verificato (regola print parsata, 0 errori).
-- [ ] **build-standalone.js** — implementa l'inlining di `data.js` + pagine in un unico HTML.
+- [x] **build-standalone.js** — `node build-standalone.js` genera `ground-of-reach-standalone.html`
+      (43 KB): inlina `data.js`, embedda il compendio renderizzato da `COMP` e riscrive i rimandi
+      `compendio.html#r…` in àncore interne. Verificato nel preview (27 carte, 9 cap./37 regole, 0 errori).
 - [ ] **Revisione veridicità** — rileggi 5 voci `INFO`/regole e correggi imprecisioni; annota quali.
 
 ## Log
@@ -44,3 +46,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Espansione SECURITY: `IP Spoofing`, `Subnet Scan` + campo `req` (prerequisito reale).
 - Costi in bit: semantica N/+s/h/⊕, badge con tooltip e legenda.
 - Print CSS: galleria stampabile (griglia 3 col, ink-friendly, no page-break nelle carte).
+- build-standalone.js: single-file con galleria + glossario + compendio inlinati.
