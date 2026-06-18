@@ -24,7 +24,9 @@ rispecchia il comportamento reale, è un bug.
   finestre overlay indipendenti (drag + chiudi), rimandi al compendio.
 - **`compendio.html`** — rulebook a regole numerate `Cap.Regola`, in **ordine reale di applicazione**:
   binario → indirizzo → maschera → subnetting → aggregazione → inoltro → NAT → sicurezza.
-- **`build-standalone.js`** — opzionale: inlina tutto in `ground-of-reach-standalone.html`.
+- **`diagramma.html`** — diagrammi di flusso (DAG → SVG) dei processi, da `FLOWS`.
+- **`applicazioni.html`** — applicazioni reali delle meccaniche (subnetting + crittografia), da `APPS`.
+- **`build-standalone.js`** — opzionale: inlina galleria + compendio in `ground-of-reach-standalone.html`.
 
 ## Data model (`data.js`)
 - `META` — titolo, sottotitolo, modulo, descrizione dello specchio, versione.
@@ -38,6 +40,11 @@ rispecchia il comportamento reale, è un bug.
   `rel` usa `[Carta]` per i rimandi e ` → ` come connettore. `req` (opzionale, carte minaccia) = prerequisito
   reale della tecnica, reso in galleria e overlay; può contenere rimandi `[Carta]`.
 - `EX_REF[name]` — rimando carta → esercizio svolto del compendio (cap. 9).
+- `FLOWS` — diagrammi: `{ id, title, intro, nodes:[{id,label,kind,card?}], edges:[[da,a,etichetta?]] }`.
+  `kind`: `start·op·dec·end`; reso come DAG layered in SVG da `diagramma.html`.
+- `APPS` / `AREAS` — applicazioni reali: `{ id, area, title, scenario, mech, real, c?, refs:[] }`;
+  `area` ∈ `net·crypto·sec`. Ponte didattico: l'operazione bit-a-bit del gioco (AND) è la stessa
+  famiglia della crittografia (XOR, bit di chiave 2^n).
 - `INFO[name]` — `{ r: cos'è davvero, g: nel gioco, c?: calcolo/comando reale }`.
 - `COMP` — capitoli del compendio `{ id, title, cls, intro, rules:[[id,txt],…] }`.
 - `TERM_REF[name]` / `KW_REF[name]` — rimando carta/keyword → regola del compendio (es. `"3.2"`).

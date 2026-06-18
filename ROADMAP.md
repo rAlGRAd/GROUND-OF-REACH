@@ -53,3 +53,6 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Print CSS: galleria stampabile (griglia 3 col, ink-friendly, no page-break nelle carte).
 - build-standalone.js: single-file con galleria + glossario + compendio inlinati.
 - Revisione veridicità: fix regola 6.1, esempio Public IP, link morti [Prefix]/[Routing].
+- Tagging Netrunner+StS: SUBTYPES (vocab controllato, chip referenziabili) + glossario per categoria.
+- diagramma.html: 4 diagrammi di flusso (DAG→SVG) da FLOWS, nodi → compendio.
+- applicazioni.html: 11 applicazioni reali (net/subnetting + crittografia + sicurezza) da APPS.

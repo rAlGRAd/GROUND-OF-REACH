@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ground of Reach — applicazioni reali delle meccaniche: subnetting (VLSM, CIDR, NAT, BGP) e crittografia (bitmask AND, XOR/WEP, lunghezza chiave, RSA), sicurezza (ACL, IPsec, anti-spoofing).">
+<title>GROUND OF REACH — applicazioni reali</title>
+<style>
+  :root{
+    --bg:#0b1020;--panel:#121a30;--panel2:#0e1528;--ink:#e8eefc;--mut:#8da2c8;
+    --line:#22304f;--acc:#39d0c8;--acc2:#6aa9ff;
+    --net:#39d0c8;--crypto:#c9a3ff;--sec:#ff7a8a;
+    --mono:ui-monospace,Consolas,monospace;--sans:system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#16224080,transparent),var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55}
+  a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+  header{max-width:1080px;margin:0 auto;padding:26px 20px 8px}
+  h1{font-size:1.6rem;margin:0;letter-spacing:.05em}
+  .sub{color:var(--mut);font-size:.92rem;margin-top:4px;max-width:760px}
+  nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  nav a{background:var(--panel);border:1px solid var(--line);padding:7px 12px;border-radius:999px;color:var(--ink);font-size:.85rem}
+  nav a:hover{border-color:var(--acc)}
+  main{max-width:1080px;margin:0 auto;padding:8px 20px 80px}
+  .area{margin-top:30px}
+  .area h2{font-size:1.05rem;letter-spacing:.06em;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .area.net h2{color:var(--net)} .area.crypto h2{color:var(--crypto)} .area.sec h2{color:var(--sec)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:14px}
+  .app{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:14px 15px;position:relative;overflow:hidden}
+  .app::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ac)}
+  .app.net{--ac:var(--net)} .app.crypto{--ac:var(--crypto)} .app.sec{--ac:var(--sec)}
+  .app h3{margin:0 0 6px;font-size:1.02rem}
+  .app .scn{font-size:.88rem;color:#cdd8f2}
+  .app .lbl{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-top:11px}
+  .app .mech{font-size:.86rem;color:var(--ink)}
+  .app .real{font-size:.86rem;color:#cdd8f2}
+  .app .cmd{font-family:var(--mono);font-size:.8rem;background:#0a1124;border:1px solid var(--line);border-radius:8px;padding:7px 9px;color:#7ee0d6;white-space:pre-wrap;margin-top:5px}
+  .refs{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+  .ref{font-family:var(--mono);font-size:.7rem;padding:2px 7px;border-radius:6px;border:1px solid var(--line);color:var(--mut)}
+  a.ref:hover{border-color:var(--acc);color:var(--ink)}
+  .bridge{max-width:1080px;margin:22px auto 0;padding:0 20px}
+  .bridge .box{background:#12183099;border:1px dashed var(--line);border-radius:12px;padding:12px 15px;color:var(--mut);font-size:.86rem}
+  .bridge b{color:var(--ink)}
+  footer{max-width:1080px;margin:0 auto;padding:0 20px 50px;color:var(--mut);font-size:.8rem}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="t"></h1>
+  <div class="sub">Come le meccaniche del gioco si applicano nel mondo reale — dal subnetting alla crittografia. Le stesse <b>operazioni sui bit</b> che reggono la maschera reggono anche la cifratura.</div>
+  <nav>
+    <a href="index.html">◂ Galleria</a>
+    <a href="compendio.html">Compendio</a>
+    <a href="diagramma.html">Diagrammi</a>
+  </nav>
+</header>
+<div class="bridge"><div class="box" id="bridge"></div></div>
+<main id="apps"></main>
+<footer id="ft"></footer>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  document.getElementById("t").textContent=(typeof META!=="undefined"?META.title:"GROUND OF REACH")+" — applicazioni reali";
+  document.getElementById("ft").innerHTML="Esempi fedeli alle reti/sicurezza reali. — "+(typeof META!=="undefined"?META.module:"");
+  document.getElementById("bridge").innerHTML="<b>Il ponte:</b> il cuore di Ground of Reach è l'operazione <b>bit-a-bit</b> (AND per la maschera, inverso per la wildcard). La crittografia usa la stessa famiglia di operazioni — <b>XOR</b> nei cifrari a flusso, conteggio dei <b>bit di chiave</b> (2^n) — quindi imparare a ragionare sui bit qui prepara a capire anche la cifratura.";
+  if(typeof APPS==="undefined"){document.getElementById("apps").textContent="data.js non caricato.";return;}
+  const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  function refLink(name){
+    let ref=null;
+    if(typeof TERM_REF!=="undefined"&&TERM_REF[name])ref=TERM_REF[name];
+    else if(typeof KW_REF!=="undefined"&&KW_REF[name])ref=KW_REF[name];
+    return ref?`<a class="ref" href="compendio.html#r${ref}">${esc(name)}</a>`:`<span class="ref">${esc(name)}</span>`;
+  }
+  const host=document.getElementById("apps");
+  Object.keys(AREAS).forEach(area=>{
+    const list=APPS.filter(a=>a.area===area); if(!list.length)return;
+    const sec=document.createElement("section");sec.className="area "+area;
+    sec.innerHTML=`<h2>${esc(AREAS[area])}</h2>`;
+    const g=document.createElement("div");g.className="grid";
+    list.forEach(a=>{
+      const d=document.createElement("article");d.className="app "+area;
+      d.innerHTML=`<h3>${esc(a.title)}</h3>
+        <div class="scn">${esc(a.scenario)}</div>
+        <div class="lbl">Meccanica di gioco</div><div class="mech">${esc(a.mech)}</div>
+        <div class="lbl">Nel reale</div><div class="real">${esc(a.real)}</div>
+        ${a.c?`<div class="lbl">Esempio</div><div class="cmd">${esc(a.c)}</div>`:""}
+        <div class="refs">${(a.refs||[]).map(refLink).join("")}</div>`;
+      g.appendChild(d);
+    });
+    sec.appendChild(g);host.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>

@@ -293,8 +293,126 @@ const EX_REF = {
   "Borrow Bits":"9.1", "FLSM":"9.3", "VLSM":"9.5"
 };
 
+/* ---------------------------------------------------------------------
+   FLOWS — diagrammi di flusso dei processi tecnici/di gioco (DAG).
+   node.kind: start · op · dec (decisione) · end. node.card = rimando carta.
+   edge: [da, a, etichetta?]
+   --------------------------------------------------------------------- */
+const FLOWS = [
+  { id:"forwarding", title:"Inoltro di un pacchetto", intro:"Dal mittente a Internet: maschera, decisione locale/remoto, routing e NAT.",
+    nodes:[
+      {id:"s",   label:"Host invia",            kind:"start"},
+      {id:"and", label:"Netmask (AND)",         kind:"op",  card:"Netmask"},
+      {id:"nid", label:"Network ID",            kind:"op",  card:"Network ID"},
+      {id:"d1",  label:"Dest. stessa rete?",    kind:"dec"},
+      {id:"lan", label:"Consegna diretta (LAN)",kind:"end", card:"Host Range"},
+      {id:"gw",  label:"Default Gateway",       kind:"op",  card:"Default Gateway"},
+      {id:"lpm", label:"Longest Prefix Match",  kind:"op",  card:"Longest Prefix Match"},
+      {id:"d2",  label:"Sorgente privata?",     kind:"dec"},
+      {id:"nat", label:"NAT / PAT",             kind:"op",  card:"NAT"},
+      {id:"net", label:"Internet",              kind:"end"}
+    ],
+    edges:[["s","and"],["and","nid"],["nid","d1"],["d1","lan","sì"],["d1","gw","no"],
+           ["gw","lpm"],["lpm","d2"],["d2","nat","sì"],["d2","net","no"],["nat","net"]] },
+
+  { id:"subnetting", title:"Subnetting di un blocco", intro:"Prendere host-bit in prestito e scegliere FLSM o VLSM secondo i fabbisogni.",
+    nodes:[
+      {id:"s",  label:"Blocco /n",            kind:"start"},
+      {id:"bo", label:"Borrow Bits (+s)",     kind:"op",  card:"Borrow Bits"},
+      {id:"sp", label:"2^s sottoreti",        kind:"op"},
+      {id:"d",  label:"Fabbisogni uguali?",   kind:"dec"},
+      {id:"fl", label:"FLSM (taglia unica)",  kind:"op",  card:"FLSM"},
+      {id:"vl", label:"VLSM (su misura)",     kind:"op",  card:"VLSM"},
+      {id:"hr", label:"Host Range per blocco",kind:"end", card:"Host Range"}
+    ],
+    edges:[["s","bo"],["bo","sp"],["sp","d"],["d","fl","sì"],["d","vl","no"],["fl","hr"],["vl","hr"]] },
+
+  { id:"binary", title:"Dal binario alla maschera", intro:"Conversione, AND con la maschera e ricavo di rete, broadcast e range host.",
+    nodes:[
+      {id:"ip", label:"IPv4 Address",   kind:"start", card:"IPv4 Address"},
+      {id:"pv", label:"Place Value (dec→bin)", kind:"op", card:"Place Value"},
+      {id:"an", label:"AND con Netmask",kind:"op",  card:"Netmask"},
+      {id:"ni", label:"Network ID",     kind:"op",  card:"Network ID"},
+      {id:"bc", label:"Broadcast",      kind:"op",  card:"Broadcast"},
+      {id:"hr", label:"Host Range",     kind:"end", card:"Host Range"}
+    ],
+    edges:[["ip","pv"],["pv","an"],["an","ni"],["an","bc"],["ni","hr"],["bc","hr"]] },
+
+  { id:"acl", title:"Filtro di una ACL", intro:"Confronto con wildcard, prima riga che combacia, permit o deny.",
+    nodes:[
+      {id:"pk", label:"Pacchetto",            kind:"start"},
+      {id:"wc", label:"Wildcard Mask (match)",kind:"op",  card:"Wildcard Mask"},
+      {id:"ac", label:"ACL: prima riga utile",kind:"op",  card:"ACL"},
+      {id:"d",  label:"Combacia?",            kind:"dec"},
+      {id:"pm", label:"permit",               kind:"end"},
+      {id:"dn", label:"deny (implicito)",     kind:"end"}
+    ],
+    edges:[["pk","wc"],["wc","ac"],["ac","d"],["d","pm","sì"],["d","dn","no"]] }
+];
+
+/* ---------------------------------------------------------------------
+   APPS — applicazioni reali delle meccaniche (net/subnetting + crittografia).
+   area: net · crypto · sec. refs = carte/keyword collegate (link al compendio).
+   --------------------------------------------------------------------- */
+const AREAS = {
+  net:    "Reti & subnetting",
+  crypto: "Crittografia — le stesse operazioni sui bit",
+  sec:    "Sicurezza di rete (subnet + crittografia)"
+};
+const APPS = [
+  /* --- NET / SUBNETTING --- */
+  { id:"office", area:"net", title:"Rete di un ufficio (VLSM)",
+    scenario:"Tre reparti da 50, 25 e 10 host: da un solo /24 servono blocchi su misura.",
+    mech:"VLSM · Borrow Bits", real:"Si ordina per fabbisogno decrescente e si assegnano maschere variabili, evitando lo spreco di indirizzi.",
+    c:"50→192.168.1.0/26 · 25→.64/27 · 10→.96/28", refs:["VLSM","Borrow Bits","Host Range"] },
+  { id:"vpc", area:"net", title:"Pianificazione di una VPC cloud",
+    scenario:"In AWS/Azure si assegna un blocco CIDR alla rete virtuale e lo si suddivide per zona.",
+    mech:"CIDR · Subnetting", real:"Un /16 ampio lascia spazio alla crescita; le subnet /24 separano le availability zone.",
+    c:"VPC 10.0.0.0/16 → 10.0.1.0/24, 10.0.2.0/24 …", refs:["CIDR","Borrow Bits","Private Range"] },
+  { id:"bgp", area:"net", title:"Aggregazione delle rotte (ISP/BGP)",
+    scenario:"Un ISP annuncia molte reti contigue ai peer riducendo la tabella globale.",
+    mech:"Supernet · Summarization", real:"Più /24 contigui e allineati si annunciano come un solo prefisso riassuntivo.",
+    c:"10.1.0.0/24 … 10.1.3.0/24 → 10.1.0.0/22", refs:["Supernet","Summarization"] },
+  { id:"home", area:"net", title:"Condivisione della connessione di casa",
+    scenario:"Molti dispositivi privati dietro un solo IP pubblico del provider.",
+    mech:"PAT (NAT overload)", real:"Il router traduce gli indirizzi privati su un unico IP pubblico, distinguendo i flussi per porta sorgente.",
+    c:"192.168.1.0/24 → 1 IP pubblico (PAT)", refs:["PAT","NAT","Private Range"] },
+
+  /* --- CRITTOGRAFIA (ponte: operazioni sui bit) --- */
+  { id:"bitmask", area:"crypto", title:"Bitmasking: estrarre campi con AND",
+    scenario:"In molti protocolli si isolano flag o campi di un header con una maschera di bit.",
+    mech:"AND — la stessa della Netmask", real:"L'AND bit-a-bit azzera i bit non voluti e conserva gli altri: identico al calcolo del Network ID, applicato a flag/campi.",
+    c:"byte AND 00001111 → isola i 4 bit bassi", refs:["AND","Netmask","BIT"] },
+  { id:"xor", area:"crypto", title:"Cifrario a flusso (XOR) — WEP",
+    scenario:"Il WEP cifra ogni byte combinandolo con un keystream (dalla fonte: cᵢ = dᵢ XOR kᵢ).",
+    mech:"XOR — famiglia di AND/NOT", real:"Stesso ragionamento bit-a-bit della maschera, con XOR al posto di AND; XOR è reversibile: dᵢ = cᵢ XOR kᵢ.",
+    c:"d=1011 XOR k=0110 → c=1101", refs:["BIT","AND","Wildcard Mask"] },
+  { id:"keylen", area:"crypto", title:"Lunghezza della chiave in bit",
+    scenario:"La robustezza dipende dai bit di chiave: 40-bit (WEP, debole), 128-bit (AES), 2048-bit (RSA).",
+    mech:"BIT · POWER2 (2^n)", real:"Con n bit di chiave lo spazio è 2^n: ogni bit raddoppia il costo della forza bruta — lo stesso 2^n di sottoreti e host.",
+    c:"AES-128 → 2^128 chiavi possibili", refs:["BIT","POWER2"] },
+  { id:"asym", area:"crypto", title:"Chiave pubblica e privata (RSA)",
+    scenario:"Crittografia asimmetrica: chiave di cifratura pubblica, di decifratura privata.",
+    mech:"Pubblico vs privato", real:"Separare ciò che è pubblico da ciò che è privato richiama il contrasto Public IP ↔ Private Range, qui applicato alle chiavi.",
+    c:"RSA-2048: pubblica nota a tutti, privata segreta", refs:["Public IP","Private Range"] },
+
+  /* --- SICUREZZA (subnet + crittografia) --- */
+  { id:"fw", area:"sec", title:"Firewall: regola per un reparto",
+    scenario:"Consentire solo la sottorete amministrazione verso un server.",
+    mech:"Wildcard Mask · ACL", real:"La ACL confronta l'IP sorgente con la coppia indirizzo/wildcard (inverso della netmask) e applica permit/deny in ordine.",
+    c:"access-list 10 permit 192.168.1.0 0.0.0.255", refs:["Wildcard Mask","ACL"] },
+  { id:"vpn", area:"sec", title:"VPN site-to-site (IPsec)",
+    scenario:"Collegare due sedi con sottoreti private attraverso Internet, in modo cifrato.",
+    mech:"Subnet + crittografia", real:"Le sottoreti private definiscono il «traffico interessante» (chi parla con chi); IPsec cifra i pacchetti tra i gateway (come).",
+    c:"10.1.0.0/24 ⇄ 10.2.0.0/24 (tunnel IPsec)", refs:["Private Range","NAT","ACL"] },
+  { id:"urpf", area:"sec", title:"Anti-spoofing (BCP38 / uRPF)",
+    scenario:"Scartare i pacchetti con indirizzo sorgente implausibile per l'interfaccia.",
+    mech:"Controllo di sottorete · uRPF", real:"Il router verifica che la sorgente appartenga alla rete attesa: difende dall'IP spoofing.",
+    c:"ip verify unicast source reachable-via rx", refs:["IP Spoofing","Network ID"] }
+];
+
 /* Esposizione globale (niente bundler: si apre da filesystem) */
 if (typeof window !== "undefined") {
-  Object.assign(window, { META, FAC, CLS, CLS_ORDER, SUBTYPES, KWCAT, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF });
+  Object.assign(window, { META, FAC, CLS, CLS_ORDER, SUBTYPES, KWCAT, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF, FLOWS, APPS, AREAS });
 }
-if (typeof module !== "undefined") { module.exports = { META, FAC, CLS, CLS_ORDER, SUBTYPES, KWCAT, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF }; }
+if (typeof module !== "undefined") { module.exports = { META, FAC, CLS, CLS_ORDER, SUBTYPES, KWCAT, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF, FLOWS, APPS, AREAS }; }

@@ -15,6 +15,8 @@ con il minimo scarto possibile fra le due.
 |---|---|
 | `index.html` | Galleria carte (per classe) + glossario keyword + ricerca con autocompletamento; finestre overlay indipendenti (trascinabili, si chiudono con un click); rimandi al compendio. |
 | `compendio.html` | Compendio dei **processi delle reti IPv4** in stile rulebook a regole numerate (Cap.Regola), in ordine reale: binario → indirizzo → maschera → subnetting → aggregazione → inoltro → NAT → sicurezza. |
+| `diagramma.html` | **Diagrammi di flusso** dei processi tecnici/di gioco (inoltro pacchetto, subnetting, binario→maschera, ACL) renderizzati in SVG da `FLOWS`; i nodi rimandano alle carte nel compendio. |
+| `applicazioni.html` | **Applicazioni reali** delle meccaniche (subnetting: VLSM/CIDR/NAT/BGP; crittografia: bitmask AND, XOR/WEP, bit di chiave, RSA; sicurezza: ACL/IPsec/anti-spoofing) da `APPS`. |
 | `data.js` | **Unica fonte di verità**: META, fazioni, classi, keyword, carte, legenda, compendio, rimandi. Si modifica qui. |
 | `build-standalone.js` | Genera `ground-of-reach-standalone.html` (single-file, comodo da condividere). |
 | `CLAUDE.md` | Contesto di progetto per Claude Code. |

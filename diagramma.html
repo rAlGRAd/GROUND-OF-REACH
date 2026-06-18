@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ground of Reach — diagrammi di flusso dei processi tecnici e di gioco: inoltro di un pacchetto, subnetting, dal binario alla maschera, filtro ACL.">
+<title>GROUND OF REACH — diagrammi</title>
+<style>
+  :root{
+    --bg:#0b1020;--panel:#121a30;--panel2:#0e1528;--ink:#e8eefc;--mut:#8da2c8;
+    --line:#22304f;--acc:#39d0c8;--acc2:#6aa9ff;
+    --start:#39d0c8;--op:#6aa9ff;--dec:#ffce5a;--end:#ff7a8a;
+    --mono:ui-monospace,Consolas,monospace;--sans:system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#16224080,transparent),var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+  header{max-width:1080px;margin:0 auto;padding:26px 20px 8px}
+  h1{font-size:1.6rem;margin:0;letter-spacing:.05em}
+  .sub{color:var(--mut);font-size:.92rem;margin-top:4px}
+  nav{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  nav a{background:var(--panel);border:1px solid var(--line);padding:7px 12px;border-radius:999px;color:var(--ink);font-size:.85rem}
+  nav a:hover{border-color:var(--acc)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;font-size:.8rem;color:var(--mut)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  main{max-width:1080px;margin:0 auto;padding:8px 20px 80px}
+  .flow{margin-top:30px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .flow h2{font-size:1.1rem;margin:0;color:var(--acc)}
+  .flow .in{color:var(--mut);font-size:.88rem;margin:4px 0 10px}
+  svg{width:100%;height:auto;display:block}
+  .edge{fill:none;stroke:#46577d;stroke-width:1.6}
+  .elbl{fill:var(--mut);font-size:11px;font-family:var(--mono);text-anchor:middle}
+  .elbl-bg{fill:var(--panel2)}
+  .node text{font-size:12.5px;fill:var(--ink);text-anchor:middle;dominant-baseline:middle;font-family:var(--sans)}
+  .node rect{stroke-width:1.5}
+  .node.start rect{fill:#0e2a2a;stroke:var(--start)}
+  .node.op rect{fill:#12203f;stroke:var(--op)}
+  .node.dec rect{fill:#2a2410;stroke:var(--dec)}
+  .node.end rect{fill:#2a1218;stroke:var(--end)}
+  .node a{cursor:pointer}
+  .node a rect{stroke-dasharray:none}
+  .node .lk{font-size:9px;fill:var(--acc);text-anchor:middle}
+  footer{max-width:1080px;margin:0 auto;padding:0 20px 50px;color:var(--mut);font-size:.8rem}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="t"></h1>
+  <div class="sub">Diagrammi di flusso dei processi tecnici e di gioco — i nodi con il bordo pieno rimandano alla carta nel compendio.</div>
+  <nav>
+    <a href="index.html">◂ Galleria</a>
+    <a href="compendio.html">Compendio</a>
+    <a href="applicazioni.html">Applicazioni reali</a>
+  </nav>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--start)"></i>inizio</span>
+    <span><i class="dot" style="background:var(--op)"></i>operazione</span>
+    <span><i class="dot" style="background:var(--dec)"></i>decisione</span>
+    <span><i class="dot" style="background:var(--end)"></i>esito</span>
+  </div>
+</header>
+<main id="flows"></main>
+<footer id="ft"></footer>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  document.getElementById("t").textContent=(typeof META!=="undefined"?META.title:"GROUND OF REACH")+" — diagrammi";
+  document.getElementById("ft").innerHTML="I processi sono fedeli alle reti IPv4 reali; la meccanica di gioco coincide con l'operazione. — "+(typeof META!=="undefined"?META.module:"");
+  const host=document.getElementById("flows");
+  if(typeof FLOWS==="undefined"){host.textContent="data.js non caricato.";return;}
+  FLOWS.forEach(f=>{
+    const box=document.createElement("section");box.className="flow";
+    box.innerHTML=`<h2>${f.title}</h2><div class="in">${f.intro}</div>`;
+    box.appendChild(renderFlow(f));
+    host.appendChild(box);
+  });
+
+  function renderFlow(flow){
+    const nodes=flow.nodes, edges=flow.edges;
+    const adj={}, indeg={};
+    nodes.forEach(n=>{adj[n.id]=[];indeg[n.id]=0;});
+    edges.forEach(([a,b])=>{adj[a].push(b);indeg[b]++;});
+    // topological order (Kahn) + longest-path layering
+    let q=nodes.filter(n=>indeg[n.id]===0).map(n=>n.id), order=[], ind=Object.assign({},indeg);
+    while(q.length){const u=q.shift();order.push(u);adj[u].forEach(v=>{if(--ind[v]===0)q.push(v);});}
+    const layer={}; nodes.forEach(n=>layer[n.id]=0);
+    order.forEach(u=>adj[u].forEach(v=>{layer[v]=Math.max(layer[v],layer[u]+1);}));
+    const layers={}; nodes.forEach(n=>{(layers[layer[n.id]]=layers[layer[n.id]]||[]).push(n);});
+    const maxL=Math.max.apply(null,Object.keys(layers).map(Number));
+    const W=760, rowGap=96, nodeH=46, padY=22;
+    const H=padY*2+maxL*rowGap+nodeH;
+    const pos={};
+    for(let l=0;l<=maxL;l++){
+      const row=layers[l]||[], n=row.length;
+      row.forEach((nd,i)=>{ pos[nd.id]={x:Math.round(W*(i+1)/(n+1)), y:padY+l*rowGap+nodeH/2}; });
+    }
+    const refOf=n=>(n.card&&typeof TERM_REF!=="undefined"&&TERM_REF[n.card])||null;
+    const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(flow.title)}">`;
+    s+=`<defs><marker id="arr-${flow.id}" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#46577d"/></marker></defs>`;
+    // edges
+    edges.forEach(([a,b,lbl])=>{
+      const p=pos[a], r=pos[b];
+      const x1=p.x, y1=p.y+nodeH/2, x2=r.x, y2=r.y-nodeH/2, my=(y1+y2)/2;
+      s+=`<path class="edge" d="M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}" marker-end="url(#arr-${flow.id})"/>`;
+      if(lbl){const mx=(x1+x2)/2, w=lbl.length*7+8;
+        s+=`<rect class="elbl-bg" x="${mx-w/2}" y="${my-9}" width="${w}" height="16" rx="4"/><text class="elbl" x="${mx}" y="${my+1}">${esc(lbl)}</text>`;}
+    });
+    // nodes
+    nodes.forEach(n=>{
+      const p=pos[n.id], w=Math.max(110, n.label.length*7.3+26), x=p.x-w/2, y=p.y-nodeH/2;
+      const ref=refOf(n);
+      const tip=n.card&&typeof INFO!=="undefined"&&INFO[n.card]?INFO[n.card].r:"";
+      const inner=`<rect x="${x}" y="${y}" width="${w}" height="${nodeH}" rx="10"/>`+
+                  `<text x="${p.x}" y="${p.y}">${esc(n.label)}</text>`+
+                  (tip?`<title>${esc(tip)}</title>`:"");
+      if(ref){
+        s+=`<g class="node ${n.kind||'op'}"><a href="compendio.html#r${ref}">${inner}</a></g>`;
+      }else{
+        s+=`<g class="node ${n.kind||'op'}">${inner}</g>`;
+      }
+    });
+    s+=`</svg>`;
+    const wrap=document.createElement("div");wrap.innerHTML=s;return wrap.firstChild;
+  }
+})();
+</script>
+</body>
+</html>
