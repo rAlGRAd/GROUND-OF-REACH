@@ -100,6 +100,9 @@ const CARDS = [
   { n:"Address Class",  fac:"net",  cost:"S",  ty:"Schema · Storico",     cls:"ADDRESS",     rel:"A /8 · B /16 · C /24 → prefisso classful di default. Superato da [CIDR].", kw:["PREFIX"] },
   { n:"Private Range",  fac:"host", cost:"S",  ty:"Oggetto",              cls:"ADDRESS",     rel:"10/8 · 172.16/12 · 192.168/16 → non instradabili; per uscire serve [NAT].", kw:["PRIVATE","TRANSLATE"] },
   { n:"CIDR",           fac:"net",  cost:"S",  ty:"Schema",               cls:"ADDRESS",     rel:"Il [Prefix] /n è esplicito e variabile → rimpiazza la [Address Class].", kw:["PREFIX","AGGREGATE"] },
+  { n:"Loopback",       fac:"host", cost:"S",  ty:"Oggetto · Riservato",  cls:"ADDRESS",     rel:"127.0.0.0/8 → punta all'host stesso (127.0.0.1). Mai instradato fuori.", kw:["PREFIX"] },
+  { n:"APIPA",          fac:"host", cost:"S",  ty:"Oggetto · Autoconfig", cls:"ADDRESS",     rel:"169.254.0.0/16 → autoassegnato in assenza di DHCP. Solo segmento locale.", kw:["PREFIX"] },
+  { n:"Public IP",      fac:"host", cost:"S",  ty:"Oggetto",              cls:"ADDRESS",     rel:"Indirizzo globalmente instradabile (no [Private Range]); spesso ottenuto via [NAT].", kw:["ROUTE","TRANSLATE"] },
 
   /* --- MASK --- */
   { n:"Netmask",        fac:"net",  cost:"S",  ty:"Oggetto · Operatore",  cls:"MASK",        rel:"[IPv4 Address] AND [Netmask] → [Network ID]. 1=rete, 0=host.", kw:["AND","PREFIX","NETID"] },
@@ -142,6 +145,9 @@ const INFO = {
   "Address Class":  { r:"Sistema classful storico: A (1–126), B (128–191), C (192–223); 127 = loopback.", g:"Fissa il prefisso di default di una carta prima di qualunque [Borrow Bits].", c:"B: 130.136.x.y → /16 di default" },
   "Private Range":  { r:"Blocchi RFC1918 riservati alle reti interne, non instradabili su Internet.", g:"Carte 'interne': non escono finché una carta [NAT] non le traduce.", c:"10/8 · 172.16/12 · 192.168/16" },
   "CIDR":           { r:"Classless Inter-Domain Routing: il prefisso /n è esplicito e di lunghezza qualsiasi.", g:"Sblocca prefissi arbitrari, abilitando subnetting e aggregazione fini.", c:"192.168.1.0/26" },
+  "Loopback":       { r:"127.0.0.0/8 è riservato al loopback: identifica l'host locale (tipicamente 127.0.0.1); i pacchetti non lasciano mai la macchina.", g:"Carta 'interna alla macchina': non entra mai nel routing.", c:"ping 127.0.0.1 → testa lo stack TCP/IP locale" },
+  "APIPA":          { r:"169.254.0.0/16 (link-local, RFC3927): un host se l'assegna da solo quando non riceve un indirizzo dal DHCP; comunica solo nello stesso segmento e non è instradabile.", g:"Indirizzo di ripiego: gioca solo nel blocco locale, mai oltre il gateway.", c:"Windows: «Indirizzo IP autoconfigurato 169.254.x.y»" },
+  "Public IP":      { r:"Indirizzo globalmente univoco e instradabile su Internet, assegnato da IANA/RIR; è l'opposto degli spazi privati RFC1918.", g:"Carta che attraversa l'Edge senza traduzione; è il bersaglio della NAT.", c:"es. 203.0.113.10 (TEST-NET-3)" },
 
   "Netmask":        { r:"Sequenza di 32 bit con 1 sui bit di rete e 0 su quelli di host; l'AND con l'indirizzo dà la rete.", g:"L'operatore centrale: applicato a [IPv4 Address] produce [Network ID].", c:"192.168.1.10 AND 255.255.255.0 → 192.168.1.0" },
   "Network ID":     { r:"Indirizzo con host-bit tutti a 0: nomina il blocco e non è assegnabile a un host.", g:"Ancora del blocco; le carte Host le si collocano accanto, mai sopra.", c:"/24 → 192.168.1.0" },
@@ -179,7 +185,8 @@ const COMP = [
     ["2.1","L'indirizzo si divide in Network ID (parte alta) e Host ID (parte bassa); il confine è dato dalla maschera."],
     ["2.2","Classful storico: A 1–126 (/8), B 128–191 (/16), C 192–223 (/24). 127 è riservato al loopback."],
     ["2.3","Indirizzi privati RFC1918: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16; non instradabili in Internet."],
-    ["2.4","CIDR supera le classi: il prefisso /n è esplicito e di lunghezza variabile."]
+    ["2.4","CIDR supera le classi: il prefisso /n è esplicito e di lunghezza variabile."],
+    ["2.5","169.254.0.0/16 (APIPA / link-local): autoconfigurazione in assenza di DHCP; valido solo sul segmento locale, non instradabile. 127.0.0.0/8 è il loopback (host stesso)."]
   ]},
   { id:"3", title:"Maschera di rete e prefisso", cls:"MASK", intro:"La maschera separa rete e host.", rules:[
     ["3.1","La maschera ha i bit di rete a 1 e i bit di host a 0, contigui da sinistra. /n = n bit a 1."],
@@ -227,6 +234,7 @@ const COMP = [
 const TERM_REF = {
   "Bit":"1.1", "Octet":"1.1", "Place Value":"1.3",
   "IPv4 Address":"2.1", "Address Class":"2.2", "Private Range":"2.3", "CIDR":"2.4",
+  "Loopback":"2.2", "APIPA":"2.5", "Public IP":"2.3",
   "Netmask":"3.2", "Network ID":"3.3", "Broadcast":"3.4", "Host Range":"3.5",
   "Borrow Bits":"4.1", "FLSM":"4.3", "VLSM":"4.4",
   "Supernet":"5.1", "Summarization":"5.3",

@@ -20,8 +20,9 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - [x] **Keyword `CONTIGUOUS`** — aggiunta a `KW`/`KW_INFO` (blocchi adiacenti e allineati a potenza di 2),
       applicata a `Supernet` e `Summarization`, `KW_REF` → §5.2. Verificato nel preview (glossario, overlay
       "Usata da", link §5.2, 0 errori).
-- [ ] **Espansione ADDRESS** — carte `Loopback` (127/8), `APIPA` (169.254/16), `Public IP`, ciascuna
-      con `INFO` e `TERM_REF` verso §2.
+- [x] **Espansione ADDRESS** — aggiunte `Loopback` (127/8 →2.2), `APIPA` (169.254/16 →2.5, nuova regola
+      link-local nel compendio) e `Public IP` (→2.3), ciascuna con `INFO` (r/g/c) e `TERM_REF`. 25 carte
+      totali. Verificato nel preview (ADDRESS 7 carte, overlay APIPA link §2.5, 0 errori).
 - [ ] **Espansione SECURITY** — carte minaccia: `IP Spoofing`, `Subnet Scan`, con campo opzionale
       `req` (prerequisito reale della tecnica) reso in carta e legenda.
 - [ ] **Costi in bit** — assegna `cost` numerico (host-bit / prefisso) alle carte dove la quantità è
@@ -35,3 +36,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - v0.1 — scaffold + seed iniziale (data model, 22 carte, 16 keyword, compendio 8 capitoli).
 - Capitolo 9 «Esercizi svolti» (casi Bononi) + `EX_REF` e link esercizio nelle carte SUBNET.
 - Keyword `CONTIGUOUS` su `Supernet`/`Summarization` (prerequisito di aggregazione, §5.2).
+- Espansione ADDRESS: `Loopback`, `APIPA` (+regola §2.5 link-local), `Public IP`.
