@@ -32,6 +32,8 @@ rispecchia il comportamento reale, è un bug.
 - `CLS` / `CLS_ORDER` — classi in ordine reale: `BINARY, ADDRESS, MASK, SUBNET, AGGREGATION, FORWARDING, TRANSLATION, SECURITY`.
 - `KW` — `[nome, tipo, descrizione]`; tipo: `b` (bit), `a` (indirizzo), `r` (inoltro).
 - `KW_INFO[name]` — `{ r: reale, g: gioco }`.
+- `SUBTYPES` — vocabolario CONTROLLATO dei sottotipi (token usati in `ty`), con definizione.
+- `KWCAT` — etichette delle categorie keyword (`b`/`a`/`r`).
 - `CARDS` — `{ n, fac, cost, ty, cls, rel, kw, req? }`. `cost` = numero di bit oppure `"S"` (effetto/regola).
   `rel` usa `[Carta]` per i rimandi e ` → ` come connettore. `req` (opzionale, carte minaccia) = prerequisito
   reale della tecnica, reso in galleria e overlay; può contenere rimandi `[Carta]`.
@@ -39,6 +41,20 @@ rispecchia il comportamento reale, è un bug.
 - `INFO[name]` — `{ r: cos'è davvero, g: nel gioco, c?: calcolo/comando reale }`.
 - `COMP` — capitoli del compendio `{ id, title, cls, intro, rules:[[id,txt],…] }`.
 - `TERM_REF[name]` / `KW_REF[name]` — rimando carta/keyword → regola del compendio (es. `"3.2"`).
+
+## Tassonomia / tagging (metodologia Netrunner + Slay the Spire 2)
+Quattro livelli ortogonali, uno per dimensione:
+- **Fazione** (`fac`: net/host/edge) — il piano di rete. ↔ *faction* di Netrunner.
+- **Classe** (`cls`, 8 valori in `CLS_ORDER`) — il tipo primario, ordina il compendio. ↔ *card type* di Netrunner.
+- **Sottotipo** (`ty`, vocabolario controllato `SUBTYPES`, token separati da " · ") — **referenziabile**:
+  cliccando un sottotipo si vedono tutte le carte che lo portano (es. *Operatore* → Netmask, Wildcard Mask).
+  ↔ *subtype* di Netrunner ("colpisci tutti i Virus / icebreaker"). Usa SOLO token presenti in `SUBTYPES`.
+- **Keyword** (`kw` + `KW_INFO`, raggruppate da `KWCAT`) — termini MAIUSCOLI con **definizione canonica**
+  unica, richiamati nel testo carta via `[...]`. ↔ *keywords* di Slay the Spire 2.
+- **Costo** (`cost`, in bit) e **req** (prerequisito reale, carte Minaccia) completano il modello.
+
+Regola: aggiungendo una carta, ogni token di `ty` deve esistere in `SUBTYPES`; ogni keyword in `kw` deve
+avere voce in `KW_INFO`; i rimandi `[X]` nel testo si risolvono a una carta o a una keyword.
 
 ## Convenzioni
 - **Nomi tecnici in inglese, prosa in italiano** (es. `Netmask`, `Default Gateway`; spiegazioni in IT).

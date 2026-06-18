@@ -40,6 +40,38 @@ const CLS = {
 };
 
 /* ---------------------------------------------------------------------
+   SOTTOTIPI — vocabolario CONTROLLATO (metodologia Netrunner/Null Signal).
+   Il campo `ty` di ogni carta usa SOLO questi token (separati da " · ").
+   Sono referenziabili: una regola/effetto può colpire "tutte le Tecnica",
+   "tutti gli Operatore", "tutte le Minaccia", ecc.
+   --------------------------------------------------------------------- */
+const SUBTYPES = {
+  "Unità":       "Elemento atomico della numerazione (il bit).",
+  "Struttura":   "Raggruppamento di unità (l'ottetto).",
+  "Oggetto":     "Indirizzo o blocco concreto su cui si opera.",
+  "Schema":      "Convenzione d'indirizzamento (classful, CIDR).",
+  "Tecnica":     "Operazione attiva che trasforma reti o indirizzi.",
+  "Regola":      "Criterio deterministico di decisione (es. inoltro).",
+  "Policy":      "Insieme ordinato di regole di filtraggio.",
+  "Minaccia":    "Tecnica offensiva con prerequisito reale (campo req).",
+  "Risorsa":     "Quantità spendibile: i 32 bit dell'indirizzo.",
+  "Operatore":   "Trasforma indirizzi con operazioni bit-a-bit (AND, inverso).",
+  "Conversione": "Passaggio tra basi numeriche (dec ↔ bin).",
+  "Storico":     "Concetto superato ma fondante (classful).",
+  "Riservato":   "Range a uso speciale non instradabile (loopback).",
+  "Autoconfig":  "Indirizzo autoassegnato senza DHCP (link-local).",
+  "Subnetting":  "Suddivisione di un blocco prendendo host-bit.",
+  "Aggregazione":"Accorpamento di blocchi contigui.",
+  "Edge":        "Funzione al confine della rete (NAT/PAT).",
+  "Routing":     "Scelta del percorso e inoltro.",
+  "Spoofing":    "Falsificazione dell'indirizzo sorgente.",
+  "Recon":       "Ricognizione/scoperta di host o reti."
+};
+
+/* Categorie keyword (metodologia Slay the Spire 2: keyword raggruppate) */
+const KWCAT = { b:"Operazioni sui bit", a:"Struttura d'indirizzo", r:"Inoltro / routing" };
+
+/* ---------------------------------------------------------------------
    KEYWORD — [nome, tipo, descrizione breve]
    tipo:  "b" operazione sui bit · "a" struttura d'indirizzo · "r" inoltro
    --------------------------------------------------------------------- */
@@ -263,6 +295,6 @@ const EX_REF = {
 
 /* Esposizione globale (niente bundler: si apre da filesystem) */
 if (typeof window !== "undefined") {
-  Object.assign(window, { META, FAC, CLS, CLS_ORDER, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF });
+  Object.assign(window, { META, FAC, CLS, CLS_ORDER, SUBTYPES, KWCAT, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF });
 }
-if (typeof module !== "undefined") { module.exports = { META, FAC, CLS, CLS_ORDER, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF }; }
+if (typeof module !== "undefined") { module.exports = { META, FAC, CLS, CLS_ORDER, SUBTYPES, KWCAT, KW, KW_INFO, CARDS, INFO, COMP, TERM_REF, KW_REF, EX_REF }; }

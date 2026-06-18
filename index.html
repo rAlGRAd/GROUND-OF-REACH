@@ -52,6 +52,10 @@
   .card .kw{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .tag{font-family:var(--mono);font-size:.7rem;padding:2px 6px;border-radius:6px;border:1px solid var(--line);color:var(--mut)}
   .tag.b{color:var(--b)} .tag.a{color:var(--a)} .tag.r{color:var(--r)}
+  .tag.st{color:#cdb4ff;border-color:#5b4b8a}
+  a[data-st]{text-decoration:none}
+  .kwcat{margin:18px 0 2px;font-size:.8rem}
+  .kwcat .tag{font-size:.72rem;letter-spacing:.06em}
   .ref{position:absolute;left:0;right:0;top:0;bottom:0}
   /* glossary */
   #glossary .grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
@@ -174,13 +178,20 @@
     return "Bit dell'indirizzo fissati da questa carta (su 32 totali)";
   }
 
-  /* ---- glossary ---- */
-  const kg=$("#kwgrid");
-  KW.forEach(([n,ty,desc])=>{
-    const d=el("div","kwcard");
-    d.innerHTML=`<div class="kn"><span class="tag ${ty}">${n}</span></div><div class="kd">${desc}</div>`;
-    d.addEventListener("click",()=>openKw(n));
-    kg.appendChild(d);
+  /* ---- glossary: keyword raggruppate per categoria (metodologia StS) ---- */
+  const gloss=$("#glossary"); $("#kwgrid").remove();
+  ["b","a","r"].forEach(cat=>{
+    const list=KW.filter(k=>k[1]===cat); if(!list.length)return;
+    const head=el("div","kwcat"); head.innerHTML=`<span class="tag ${cat}">${(typeof KWCAT!=="undefined"&&KWCAT[cat])||cat}</span>`;
+    gloss.appendChild(head);
+    const g=el("div","grid");
+    list.forEach(([n,ty,desc])=>{
+      const d=el("div","kwcard");
+      d.innerHTML=`<div class="kn"><span class="tag ${ty}">${n}</span></div><div class="kd">${desc}</div>`;
+      d.addEventListener("click",()=>openKw(n));
+      g.appendChild(d);
+    });
+    gloss.appendChild(g);
   });
 
   /* ---- overlay windows (click-to-pin, independent) ---- */
@@ -195,13 +206,16 @@
     drag(w,w.querySelector(".h"));
     w.querySelectorAll("[data-card]").forEach(a=>a.onclick=e=>{e.preventDefault();openCard(a.dataset.card);});
     w.querySelectorAll("[data-kw]").forEach(a=>a.onclick=e=>{e.preventDefault();openKw(a.dataset.kw);});
+    w.querySelectorAll("[data-st]").forEach(a=>a.onclick=e=>{e.preventDefault();openSubtype(a.dataset.st);});
     ov.appendChild(w); return w;
   }
   function openCard(n){
     const c=CARDS.find(x=>x.n===n); if(!c)return;
     const i=INFO[n]||{}; const ref=TERM_REF[n];
     const kw=c.kw.map(k=>`<a data-kw="${k}" href="#"><span class="tag ${kwType(k)}">${k}</span></a>`).join(" ");
-    let h=`<div class="lbl">Carta · ${c.ty} · ${FAC[c.fac].label}</div><p>${linkRel(c.rel)}</p>`;
+    const sts=c.ty.split("·").map(s=>s.trim()).filter(Boolean).map(s=>`<a data-st="${s}" href="#"><span class="tag st">${s}</span></a>`).join(" ");
+    let h=`<div class="lbl">Classe ${c.cls} · ${FAC[c.fac].label} · ${c.cost==="S"?"⊕":c.cost+" bit"}</div><p>${linkRel(c.rel)}</p>`;
+    h+=`<div class="lbl">Sottotipi</div><p>${sts}</p>`;
     if(c.req){h+=`<div class="lbl">⚑ Requisito (prerequisito reale)</div><p>${linkRel(c.req)}</p>`;}
     if(i.r){h+=`<div class="lbl">Cos'è davvero (reti IPv4)</div><p>${linkRel(i.r)}</p>`;}
     if(i.g){h+=`<div class="lbl">Nel gioco</div><p>${linkRel(i.g)}</p>`;}
@@ -221,6 +235,14 @@
     h+=`<div class="lbl">Usata da</div><p>${used}</p>`;
     if(ref)h+=`<div class="lk">▸ <a href="compendio.html#r${ref}">Compendio §${ref}</a></div>`;
     win("KW · "+n,h);
+  }
+  function openSubtype(s){
+    const def=(typeof SUBTYPES!=="undefined"&&SUBTYPES[s])||"";
+    const used=CARDS.filter(c=>c.ty.split("·").map(x=>x.trim()).includes(s)).map(c=>`<a data-card="${c.n}" href="#">${c.n}</a>`).join(", ")||"—";
+    let h=`<div class="lbl">Sottotipo <span class="tag st">${s}</span></div>`;
+    if(def)h+=`<p>${def}</p>`;
+    h+=`<div class="lbl">Carte con questo sottotipo</div><p>${used}</p>`;
+    win("Sottotipo · "+s,h);
   }
   function drag(w,handle){
     let sx,sy,ox,oy,on=false;
