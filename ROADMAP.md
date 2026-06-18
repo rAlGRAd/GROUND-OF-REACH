@@ -26,8 +26,9 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - [x] **Espansione SECURITY** — carte minaccia `IP Spoofing` (→8.4) e `Subnet Scan` (→8.5) con nuovo
       campo opzionale `req` (prerequisito reale), reso in galleria e nell'overlay; regole 8.4/8.5 nel
       compendio. 27 carte. Verificato nel preview (req visibile, link §8.x, 0 errori).
-- [ ] **Costi in bit** — assegna `cost` numerico (host-bit / prefisso) alle carte dove la quantità è
-      didatticamente significativa (es. `Borrow Bits`, `Host Range`); aggiorna il rendering.
+- [x] **Costi in bit** — semantica `cost`: N=bit fissati (su 32), `+s`=host-bit prestati, `h`=32−prefisso,
+      `S`=⊕ effetto. Assegnati `Loopback` 8, `APIPA` 16, `Borrow Bits` +s, `Host Range` h; badge con tooltip
+      e legenda nel footer. Verificato nel preview (0 errori).
 - [ ] **Print CSS** — `@media print` in `index.html`: nasconde nav/ricerca, stampa la griglia carte.
 - [ ] **build-standalone.js** — implementa l'inlining di `data.js` + pagine in un unico HTML.
 - [ ] **Revisione veridicità** — rileggi 5 voci `INFO`/regole e correggi imprecisioni; annota quali.
@@ -39,3 +40,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Keyword `CONTIGUOUS` su `Supernet`/`Summarization` (prerequisito di aggregazione, §5.2).
 - Espansione ADDRESS: `Loopback`, `APIPA` (+regola §2.5 link-local), `Public IP`.
 - Espansione SECURITY: `IP Spoofing`, `Subnet Scan` + campo `req` (prerequisito reale).
+- Costi in bit: semantica N/+s/h/⊕, badge con tooltip e legenda.

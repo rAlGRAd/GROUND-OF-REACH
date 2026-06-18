@@ -100,18 +100,18 @@ const CARDS = [
   { n:"Address Class",  fac:"net",  cost:"S",  ty:"Schema · Storico",     cls:"ADDRESS",     rel:"A /8 · B /16 · C /24 → prefisso classful di default. Superato da [CIDR].", kw:["PREFIX"] },
   { n:"Private Range",  fac:"host", cost:"S",  ty:"Oggetto",              cls:"ADDRESS",     rel:"10/8 · 172.16/12 · 192.168/16 → non instradabili; per uscire serve [NAT].", kw:["PRIVATE","TRANSLATE"] },
   { n:"CIDR",           fac:"net",  cost:"S",  ty:"Schema",               cls:"ADDRESS",     rel:"Il [Prefix] /n è esplicito e variabile → rimpiazza la [Address Class].", kw:["PREFIX","AGGREGATE"] },
-  { n:"Loopback",       fac:"host", cost:"S",  ty:"Oggetto · Riservato",  cls:"ADDRESS",     rel:"127.0.0.0/8 → punta all'host stesso (127.0.0.1). Mai instradato fuori.", kw:["PREFIX"] },
-  { n:"APIPA",          fac:"host", cost:"S",  ty:"Oggetto · Autoconfig", cls:"ADDRESS",     rel:"169.254.0.0/16 → autoassegnato in assenza di DHCP. Solo segmento locale.", kw:["PREFIX"] },
+  { n:"Loopback",       fac:"host", cost:"8",  ty:"Oggetto · Riservato",  cls:"ADDRESS",     rel:"127.0.0.0/8 → punta all'host stesso (127.0.0.1). Mai instradato fuori.", kw:["PREFIX"] },
+  { n:"APIPA",          fac:"host", cost:"16", ty:"Oggetto · Autoconfig", cls:"ADDRESS",     rel:"169.254.0.0/16 → autoassegnato in assenza di DHCP. Solo segmento locale.", kw:["PREFIX"] },
   { n:"Public IP",      fac:"host", cost:"S",  ty:"Oggetto",              cls:"ADDRESS",     rel:"Indirizzo globalmente instradabile (no [Private Range]); spesso ottenuto via [NAT].", kw:["ROUTE","TRANSLATE"] },
 
   /* --- MASK --- */
   { n:"Netmask",        fac:"net",  cost:"S",  ty:"Oggetto · Operatore",  cls:"MASK",        rel:"[IPv4 Address] AND [Netmask] → [Network ID]. 1=rete, 0=host.", kw:["AND","PREFIX","NETID"] },
   { n:"Network ID",     fac:"net",  cost:"S",  ty:"Oggetto",              cls:"MASK",        rel:"Host-[Bit] tutti a 0 → primo indirizzo del blocco. Prodotto da [Netmask].", kw:["NETID","AND"] },
   { n:"Broadcast",      fac:"net",  cost:"S",  ty:"Oggetto",              cls:"MASK",        rel:"Host-[Bit] tutti a 1 → ultimo indirizzo; chiude la [Host Range].", kw:["BROADCAST","HOSTRANGE"] },
-  { n:"Host Range",     fac:"host", cost:"S",  ty:"Oggetto",              cls:"MASK",        rel:"[Network ID]+1 … [Broadcast]−1 → host utili = 2^h − 2.", kw:["HOSTRANGE","POWER2"] },
+  { n:"Host Range",     fac:"host", cost:"h",  ty:"Oggetto",              cls:"MASK",        rel:"[Network ID]+1 … [Broadcast]−1 → host utili = 2^h − 2.", kw:["HOSTRANGE","POWER2"] },
 
   /* --- SUBNET --- */
-  { n:"Borrow Bits",    fac:"net",  cost:"S",  ty:"Tecnica · Subnetting", cls:"SUBNET",      rel:"Sposta s host-[Bit] nella rete → 2^s [Network ID]. Allunga il [Prefix].", kw:["BORROW","SPLIT","POWER2","PREFIX"] },
+  { n:"Borrow Bits",    fac:"net",  cost:"+s", ty:"Tecnica · Subnetting", cls:"SUBNET",      rel:"Sposta s host-[Bit] nella rete → 2^s [Network ID]. Allunga il [Prefix].", kw:["BORROW","SPLIT","POWER2","PREFIX"] },
   { n:"FLSM",           fac:"net",  cost:"S",  ty:"Tecnica · Subnetting", cls:"SUBNET",      rel:"[Borrow Bits] uniforme → sottoreti di pari taglia. Spreca se i fabbisogni differiscono.", kw:["SPLIT","BORROW"] },
   { n:"VLSM",           fac:"net",  cost:"S",  ty:"Tecnica · Subnetting", cls:"SUBNET",      rel:"Maschere variabili: assegna prima i blocchi grandi, poi i piccoli → spreco minimo.", kw:["SPLIT","BORROW","HOSTRANGE"] },
 

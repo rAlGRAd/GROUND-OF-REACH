@@ -115,7 +115,7 @@
   $("#st").textContent=META.subtitle;
   $("#mt").innerHTML="<b>Specchio «al contrario» di Root of Trust.</b> "+META.mirror;
   $("#mod").textContent=META.module+" · "+META.version;
-  $("#ft").innerHTML="Regola d'oro: ogni carta e ogni legenda è <b>fedele alle reti IPv4 reali</b>; la meccanica coincide con l'operazione. — "+META.module;
+  $("#ft").innerHTML="Badge costo (alto a destra della carta): <b>N bit</b> = bit dell'indirizzo fissati (su 32); <b>+s</b> / <b>h</b> = bit variabili del subnetting; <b>⊕</b> = effetto/regola.<br>Regola d'oro: ogni carta e ogni legenda è <b>fedele alle reti IPv4 reali</b>; la meccanica coincide con l'operazione. — "+META.module;
 
   /* ---- render cards by class ---- */
   const host=$("#cards");
@@ -132,12 +132,18 @@
     const d=el("div","card "+c.fac); d.dataset.name=c.n;
     const kw=c.kw.map(k=>`<span class="tag ${kwType(k)}">${k}</span>`).join("");
     d.innerHTML=`<div class="top"><div><div class="nm">${c.n}</div><div class="ty">${c.ty}</div></div>
-      <div class="cost">${c.cost==="S"?"⊕":c.cost+" bit"}</div></div>
+      <div class="cost" title="${costTitle(c.cost)}">${c.cost==="S"?"⊕":c.cost+" bit"}</div></div>
       <div class="rel">${linkRel(c.rel)}</div>${c.req?`<div class="req">⚑ Richiede: ${linkRel(c.req)}</div>`:""}<div class="kw">${kw}</div>`;
     d.addEventListener("click",e=>{ if(e.target.closest("[data-card]"))return; openCard(c.n); });
     return d;
   }
   function linkRel(t){ return t.replace(/\[([^\]]+)\]/g,(m,n)=>`<a data-card="${n}" href="#">${n}</a>`); }
+  function costTitle(c){
+    if(c==="S")return "Effetto/regola — nessun costo fisso in bit";
+    if(c==="+s")return "Subnetting: prende in prestito s host-bit (allunga il prefisso)";
+    if(c==="h")return "h = 32 − prefisso: bit di host del blocco (host utili = 2^h − 2)";
+    return "Bit dell'indirizzo fissati da questa carta (su 32 totali)";
+  }
 
   /* ---- glossary ---- */
   const kg=$("#kwgrid");
