@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ground of Reach — compendio dei processi delle reti IPv4 in ordine reale di applicazione: binario → indirizzi → maschere → subnetting → aggregazione → inoltro → NAT → sicurezza.">
+<title>GROUND OF REACH — compendio</title>
+<style>
+  :root{
+    --bg:#0b1020;--panel:#121a30;--panel2:#0e1528;--ink:#e8eefc;--mut:#8da2c8;
+    --line:#22304f;--acc:#39d0c8;--acc2:#6aa9ff;--mono:ui-monospace,Consolas,monospace;
+    --sans:system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;display:grid;grid-template-columns:260px 1fr}
+  a{color:var(--acc2);text-decoration:none}a:hover{text-decoration:underline}
+  aside{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:22px 18px;background:var(--panel2)}
+  aside h1{font-size:1.1rem;letter-spacing:.06em;margin:0 0 4px}
+  aside .sub{color:var(--mut);font-size:.8rem;margin-bottom:16px}
+  aside nav a{display:block;padding:6px 8px;border-radius:8px;color:var(--ink);font-size:.88rem}
+  aside nav a:hover{background:#1b2746;text-decoration:none}
+  aside nav .num{font-family:var(--mono);color:var(--acc);margin-right:8px}
+  aside .back{display:inline-block;margin-top:18px;font-size:.82rem}
+  main{padding:32px 40px 90px;max-width:880px}
+  .lead{color:var(--mut);max-width:680px;margin-bottom:26px}
+  .ch{margin-top:40px;scroll-margin-top:20px}
+  .ch h2{font-size:1.25rem;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .ch h2 .n{font-family:var(--mono);color:var(--acc)}
+  .ch .in{color:var(--mut);font-style:italic;margin:6px 0 14px}
+  .rule{display:flex;gap:14px;padding:10px 12px;border-radius:10px;scroll-margin-top:16px}
+  .rule:target{background:#16223f;outline:1px solid var(--acc)}
+  .rule .rid{font-family:var(--mono);color:var(--acc2);font-weight:700;white-space:nowrap}
+  .legend{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:.85rem}
+  @media(max-width:760px){body{grid-template-columns:1fr}aside{position:static;height:auto}}
+</style>
+</head>
+<body>
+<aside>
+  <h1 id="t"></h1>
+  <div class="sub" id="st"></div>
+  <nav id="toc"></nav>
+  <a class="back" href="index.html">◂ Galleria carte</a>
+</aside>
+<main>
+  <p class="lead" id="lead"></p>
+  <div id="body"></div>
+  <div class="legend">
+    Ordine reale di applicazione (mirror di Root of Trust: identità→…→minacce).
+    Le regole sono il <b>fondamento</b> a cui ogni carta della galleria rimanda.
+  </div>
+</main>
+<script src="data.js"></script>
+<script>
+(function(){
+  const $=s=>document.querySelector(s);
+  $("#t").textContent=META.title;
+  $("#st").textContent="Compendio · "+META.module;
+  $("#lead").innerHTML="Processi delle reti IPv4 in <b>ordine reale di applicazione</b>: dal bit alla sicurezza. Numerazione Cap.Regola; ogni carta della <a href='index.html'>galleria</a> punta qui.";
+  const toc=$("#toc"), body=$("#body");
+  COMP.forEach(ch=>{
+    const a=document.createElement("a"); a.href="#c"+ch.id;
+    a.innerHTML=`<span class="num">${ch.id}</span>${ch.title}`; toc.appendChild(a);
+    const sec=document.createElement("section"); sec.className="ch"; sec.id="c"+ch.id;
+    sec.innerHTML=`<h2><span class="n">${ch.id}.</span> ${ch.title} <span style="font-size:.7rem;color:var(--mut)">[${ch.cls}]</span></h2><div class="in">${ch.intro}</div>`;
+    ch.rules.forEach(([rid,txt])=>{
+      const r=document.createElement("div"); r.className="rule"; r.id="r"+rid;
+      r.innerHTML=`<span class="rid">${rid}</span><span>${txt}</span>`;
+      sec.appendChild(r);
+    });
+    body.appendChild(sec);
+  });
+  if(location.hash){const t=document.querySelector(location.hash);if(t)t.scrollIntoView();}
+})();
+</script>
+</body>
+</html>

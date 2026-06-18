@@ -1,0 +1,10 @@
+# build artefatto opzionale
+ground-of-reach-standalone.html
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+.vscode/
+.idea/
