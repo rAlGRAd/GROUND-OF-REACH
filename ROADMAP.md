@@ -56,3 +56,4 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - Tagging Netrunner+StS: SUBTYPES (vocab controllato, chip referenziabili) + glossario per categoria.
 - diagramma.html: 4 diagrammi di flusso (DAG→SVG) da FLOWS, nodi → compendio.
 - applicazioni.html: 11 applicazioni reali (net/subnetting + crittografia + sicurezza) da APPS.
+- standalone esteso: ora include anche diagrammi e applicazioni (file unico, àncore interne).

@@ -18,7 +18,7 @@ con il minimo scarto possibile fra le due.
 | `diagramma.html` | **Diagrammi di flusso** dei processi tecnici/di gioco (inoltro pacchetto, subnetting, binario→maschera, ACL) renderizzati in SVG da `FLOWS`; i nodi rimandano alle carte nel compendio. |
 | `applicazioni.html` | **Applicazioni reali** delle meccaniche (subnetting: VLSM/CIDR/NAT/BGP; crittografia: bitmask AND, XOR/WEP, bit di chiave, RSA; sicurezza: ACL/IPsec/anti-spoofing) da `APPS`. |
 | `data.js` | **Unica fonte di verità**: META, fazioni, classi, keyword, carte, legenda, compendio, rimandi. Si modifica qui. |
-| `build-standalone.js` | Genera `ground-of-reach-standalone.html` (single-file, comodo da condividere). |
+| `build-standalone.js` | Genera `ground-of-reach-standalone.html`: **un unico file** con galleria + compendio + diagrammi + applicazioni (rimandi convertiti in àncore interne), comodo da condividere offline. |
 | `CLAUDE.md` | Contesto di progetto per Claude Code. |
 | `ROADMAP.md` | Stato e prossimi lavori. |
 

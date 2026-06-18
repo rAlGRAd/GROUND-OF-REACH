@@ -26,7 +26,8 @@ rispecchia il comportamento reale, è un bug.
   binario → indirizzo → maschera → subnetting → aggregazione → inoltro → NAT → sicurezza.
 - **`diagramma.html`** — diagrammi di flusso (DAG → SVG) dei processi, da `FLOWS`.
 - **`applicazioni.html`** — applicazioni reali delle meccaniche (subnetting + crittografia), da `APPS`.
-- **`build-standalone.js`** — opzionale: inlina galleria + compendio in `ground-of-reach-standalone.html`.
+- **`build-standalone.js`** — opzionale: inlina galleria + compendio + diagrammi + applicazioni in
+  un unico `ground-of-reach-standalone.html` (rimandi convertiti in àncore interne).
 
 ## Data model (`data.js`)
 - `META` — titolo, sottotitolo, modulo, descrizione dello specchio, versione.
