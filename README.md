@@ -45,5 +45,12 @@ Claude Code legge automaticamente `CLAUDE.md`. Esempi:
 Ogni carta e ogni voce di legenda deve essere **fedele alle reti IPv4 reali**, e la **meccanica
 deve coincidere con l'operazione**: si impara giocando. La veridicità viene prima della giocabilità.
 
+## Copertura (MOD 1.1)
+Oltre alle fondamenta dell'indirizzamento (binario, maschere, subnetting, aggregazione), il database
+copre l'intero modulo: **modello a livelli** (OSI/TCP-IP, incapsulamento), **L2** (MAC/Ethernet/ARP/
+switch/hub/domini), **instradamento L3** (router, tabella, statiche, RIP/OSPF/BGP, ICMP, TTL),
+**trasporto L4** (TCP/UDP, porte, socket), **applicativo L7** (DNS/DHCP/HTTP), **NAT** e
+**crittografia/sicurezza** (firewall, chiavi simmetriche/asimmetriche, hash, firma, certificati, TLS, IPsec).
+
 ## Versione
-v0.1 — seed iterabile. Soggetto: MOD 1.1 (Bononi). Costi in bit dove pertinenti; il resto è `S`.
+v0.2 — copertura completa del modulo. 63 carte · 34 keyword · 15 capitoli (62 regole). Costi in bit dove pertinenti.

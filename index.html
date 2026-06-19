@@ -52,6 +52,7 @@
   .card .kw{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .tag{font-family:var(--mono);font-size:.7rem;padding:2px 6px;border-radius:6px;border:1px solid var(--line);color:var(--mut)}
   .tag.b{color:var(--b)} .tag.a{color:var(--a)} .tag.r{color:var(--r)}
+  .tag.l{color:#9be29b} .tag.p{color:#ffc08a} .tag.s{color:#ff9ec7}
   .tag.st{color:#cdb4ff;border-color:#5b4b8a}
   a[data-st]{text-decoration:none}
   .kwcat{margin:18px 0 2px;font-size:.8rem}
@@ -182,7 +183,7 @@
 
   /* ---- glossary: keyword raggruppate per categoria (metodologia StS) ---- */
   const gloss=$("#glossary"); $("#kwgrid").remove();
-  ["b","a","r"].forEach(cat=>{
+  (typeof KWCAT!=="undefined"?Object.keys(KWCAT):["b","a","r"]).forEach(cat=>{
     const list=KW.filter(k=>k[1]===cat); if(!list.length)return;
     const head=el("div","kwcat"); head.innerHTML=`<span class="tag ${cat}">${(typeof KWCAT!=="undefined"&&KWCAT[cat])||cat}</span>`;
     gloss.appendChild(head);

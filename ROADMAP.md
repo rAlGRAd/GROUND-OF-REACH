@@ -57,3 +57,6 @@ Stato del lavoro e prossime voci. Procedi **una voce per esecuzione**, dall'alto
 - diagramma.html: 4 diagrammi di flusso (DAG→SVG) da FLOWS, nodi → compendio.
 - applicazioni.html: 11 applicazioni reali (net/subnetting + crittografia + sicurezza) da APPS.
 - standalone esteso: ora include anche diagrammi e applicazioni (file unico, àncore interne).
+- v0.2 copertura completa MOD 1.1: +36 carte (STACK/OSI-TCP-IP, LINK/L2, ROUTING/L3, TRANSPORT/L4,
+  APPLICATION/L7, CRYPTO, Firewall, Multicast, Point-to-Point), +17 keyword (3 nuove categorie),
+  +6 capitoli compendio (10–15) e regole 2.6/4.5. Totale: 63 carte, 34 keyword, 15 capitoli/62 regole.
